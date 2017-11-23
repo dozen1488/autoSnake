@@ -1,0 +1,7 @@
+{
+    "Empty": 0,
+    "Wall": 1,
+    "Food": 2,
+    "SnakeTail": 3,
+    "SnakeHead": 4
+}
