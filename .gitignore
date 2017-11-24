@@ -1,2 +1,4 @@
 **/node_modules/**
 **/package-lock.json
+server/server-static/**
+server/server-static/

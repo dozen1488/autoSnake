@@ -1,5 +1,7 @@
-import Snake from './snake';
 import _ from 'lodash';
+import Dispatcher from '../dispatchers/BoardDispatcher';
+
+import Snake from './snake';
 import SellsMeaning from '../sharedConstants/SellsMeanind.json';
 
 export default class BoardModel {
@@ -19,6 +21,17 @@ export default class BoardModel {
             }
         );
 
+        Dispatcher.register((eventData) => {
+            switch(eventData.eventName) {
+                case 'onMouseOver': 
+
+                break;
+                case 'onClick':
+                
+                break;
+            }
+        });
+        
         this.didSnakeEatLustTurn = false;
     }
 
