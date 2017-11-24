@@ -1,12 +1,9 @@
 import React from 'react';
 import _ from 'lodash';
-import Dispatcher from '../dispatchers/BoardDispatcher';
+import {Dispatcher} from 'flux';
 
 import SellsMeaning from '../sharedConstants/SellsMeanind.json';
 import BoardModel from '../models/board';
-
-const AppDispatcher = new Dispatcher(); 
-window.AppDispatcher = AppDispatcher;
 
 export default class Board extends React.Component {
 
@@ -15,10 +12,22 @@ export default class Board extends React.Component {
         this.state = {
             boardModel: new BoardModel(50, 50)
         }
-    }
+        this.dispatcher = new Dispatcher();
+        this.dispatcher.register((eventData) => {
+            switch(eventData.eventName){
+                case 'onMouseOver':
+                    if(this.mousePushed) {
+                        eventData.emmiter.setState({
+                            status: SellsMeaning.Wall
+                        });
+                    }
+                    break;
+                case 'onClick':
+                    this.mousePushed = !this.mousePushed;
+                    break;
+            }
+        });
 
-    toggleMouse() {
-        this.mousePushed = !this.mousePushed;
     }
 
     renderTable(rows, columns) {
@@ -29,6 +38,7 @@ export default class Board extends React.Component {
                     return <td className="Square">
                         <Square status={status}
                             x={column} y={row}
+                            dispatcher={this.dispatcher}
                         />
                     </td>;
                 })
@@ -39,8 +49,7 @@ export default class Board extends React.Component {
     render() {
         const table = this.renderTable(50, 50);
         return (
-            <table className="Board"
-                onClick={() => this.toggleMouse()}>
+            <table className="Board">
                 {table}
             </table>
         );
@@ -51,29 +60,34 @@ class Square extends React.Component {
 
     constructor(...args) {
         super(...args);
+        this.state = {
+            status: this.props.status
+        };
     }
 
     onClick(){
-        AppDispatcher.dispatch({
+        this.props.dispatcher.dispatch({
             eventName: 'onClick',
             x: this.props.x,
-            y: this.props.y
+            y: this.props.y,
+            emmiter: this
         });
     }
 
     onMouseOver(){
-        AppDispatcher.dispatch({
+        this.props.dispatcher.dispatch({
             eventName: 'onMouseOver',
             x: this.props.x,
-            y: this.props.y
+            y: this.props.y,
+            emmiter: this
         });
     }
 
     render() {
         return (
-            <img src={ImageStatus[this.props.status]} 
-                onMouseOver={() => {this.onMouseOver}}
-                onClick={() => {this.onClick}}
+            <img src={ImageStatus[this.state.status]} 
+                onMouseOver={() => {this.onMouseOver()}}
+                onClick={() => {this.onClick()}}
                 width='10px' 
                 height='10px'
             />

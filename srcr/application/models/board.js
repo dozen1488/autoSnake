@@ -24,10 +24,10 @@ export default class BoardModel {
         Dispatcher.register((eventData) => {
             switch(eventData.eventName) {
                 case 'onMouseOver': 
-
+                    
                 break;
                 case 'onClick':
-                
+                    this.appendWall(eventData);
                 break;
             }
         });
