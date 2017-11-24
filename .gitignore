@@ -1,3 +1,5 @@
 **/node_modules/**
 **/package-lock.json
 server/server-static
+server/server-static/bundle.js
+server/server-static/bundle.js.map
