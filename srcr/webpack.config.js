@@ -1,8 +1,8 @@
-const _ = require('lodash');
-const path = require('path');
-const webpack = require('webpack');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const _ = require("lodash");
+const path = require("path");
+const webpack = require("webpack");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
 
 module.exports = {
     context: __dirname + "/application",
@@ -12,15 +12,19 @@ module.exports = {
         filename: "bundle.js"
     },
 
+    resolve: {
+        extensions: [".js", ".json", ".jsx", ".png"]
+    },
+
     module: {
         loaders: [
             {
                 test: /.jsx?$/,
-                loader: 'babel-loader',
+                loader: "babel-loader",
                 exclude: /node_modules/,
                 options: {
                     presets: [
-                        "react"
+                        "react", "es2017"
                     ]
                 }
             },
@@ -30,13 +34,13 @@ module.exports = {
             },
             {
                 test: /\.json$/,
-                loader: 'json-loader'
+                loader: "json-loader"
             }
         ]
     },
 };
 
-if (process.env.NODE_ENV == 'development') {
+if (process.env.NODE_ENV == "development") {
     module.exports = _.merge(
         module.exports,
         {
@@ -49,7 +53,7 @@ if (process.env.NODE_ENV == 'development') {
     )
 }
 
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV == "production") {
     module.exports.plugins = module.exports.plugins || [];
     module.exports.plugins.push(
         new UglifyJsPlugin()

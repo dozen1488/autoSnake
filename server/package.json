@@ -1,14 +1,14 @@
 {
-  "name": "neiro-snake-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "author": "Dmitry",
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.16.2"
-  }
+    "name": "neiro-snake-server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start-server": "./server.js"
+    },
+    "author": "Dmitry",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.16.2"
+    }
 }

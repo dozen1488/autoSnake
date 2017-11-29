@@ -1,8 +1,7 @@
 import _ from 'lodash';
-import Dispatcher from '../dispatchers/BoardDispatcher';
 
 import Snake from './snake';
-import SellsMeaning from '../sharedConstants/SellsMeanind.json';
+import SellsMeaning from '../sharedConstants/SellsMeanind';
 
 export default class BoardModel {
 
@@ -20,32 +19,21 @@ export default class BoardModel {
                     SellsMeaning.SnakeTail
             }
         );
-
-        Dispatcher.register((eventData) => {
-            switch(eventData.eventName) {
-                case 'onMouseOver': 
-                    
-                break;
-                case 'onClick':
-                    this.appendWall(eventData);
-                break;
-            }
-        });
         
         this.didSnakeEatLustTurn = false;
     }
 
-    appendWall({x, y}) {
+    appendWall(x, y) {
         this.board[x][y] = SellsMeaning.Wall;
         return {x, y};
     }
 
-    appendFood({x, y}) {
+    appendFood(x, y) {
         this.board[x][y] = SellsMeaning.Food;
         return {x, y};
     }
 
-    updateState() {
+    updateState(){
         const {head, tail} = this.snake.move(this.didSnakeEatLustTurn);
 
         const gameOverCondition = (this.board[x][y] === SellsMeaning.Wall) || 

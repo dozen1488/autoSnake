@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Board from './views/board.jsx';
+import Container from './views/board';
 
-ReactDOM.render(<Board />, document.getElementById("Application"));
+ReactDOM.render(<Container />, document.getElementById("Application"));
