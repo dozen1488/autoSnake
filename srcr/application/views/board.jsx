@@ -10,11 +10,20 @@ export default class Board extends React.Component {
 
     constructor(...args) {
         super(...args);
+        this.squareRefs = new Array(50)
+            .fill(null, 0)
+            .map(() => new Array(50));
     }
 
     componentDidMount() {
         store.addListener(
-            () => this.forceUpdate()
+            () => {
+                const board = store.getState();
+                const {x, y} = board.changedSquare;
+                this.squareRefs[x][y]({
+                    status: board.board.board[x][y]
+                });
+            }
         )
     }
 
@@ -28,9 +37,13 @@ export default class Board extends React.Component {
                         .map((none, column) => {
                             const status = store.getState().board.board[column][row];
                             return <td className="Square">
-                                <Square status={status}
-                                    x={column} y={row}
-                                    dispatcher={this.dispatcher}
+                                <Square 
+                                    status={status}
+                                    x={column} 
+                                    y={row}
+                                    callback={(func) => {
+                                        this.squareRefs[column][row] = func;
+                                    }}
                                 />
                             </td>;
                         })
@@ -52,11 +65,18 @@ export default class Board extends React.Component {
 
 class Square extends React.Component {
 
+    constructor(...args) {
+        super(...args);
+        this.state = {
+            status: this.props.status
+        };
+        this.props.callback(this.setState.bind(this));
+    }
+
     render() {
         return (
-            <img src={ImageStatus[this.props.status]} 
+            <img src={ImageStatus[this.state.status]} 
                 draggable='false' 
-                ondragstart="return false;"
                 onMouseOver={() => {
                     onHover(this.props.x, this.props.y);
                 }}

@@ -12,27 +12,29 @@ class Store extends ReduceStore {
     getInitialState() {
         return {
             board: new BoardModel(50, 50),
-            isMouseClicked: false
+            isMouseClicked: false,
+            changedSquare: null
         };
     }
 
     reduce(state, action) {
+        let result;
         const actionMap = {
-            onClick(){
+            onClick: () => {
                 state.isMouseClicked = true;
             },
-            onHover(){
+            onHover: () => {
                 if(state.isMouseClicked) {
-                    state.board.appendWall(action.x, action.y);
+                    state.changedSquare = state.board.appendWall(action.x, action.y);
+                    this.__emitChange(result);
                 }
             },
-            onRelease(){
+            onRelease: () => {
                 state.isMouseClicked = false;
             }
         };
         if(actionMap[action.type]){
             actionMap[action.type]();
-            this.__emitChange();
         }
         return state;
     }
