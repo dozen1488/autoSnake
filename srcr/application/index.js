@@ -3,4 +3,12 @@ import ReactDOM from 'react-dom';
 
 import Container from './views/board';
 
-ReactDOM.render(<Container />, document.getElementById("Application"));
+window.ApplicationConfig = {
+    x: 100,
+    y: 100
+};
+
+ReactDOM.render(<Container 
+    x={window.ApplicationConfig.x} 
+    y={window.ApplicationConfig.y}
+/>, document.getElementById("Application"));

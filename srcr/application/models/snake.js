@@ -15,10 +15,10 @@ export default class Snake {
         const direction = this._getDirection();
         switch (direction) {
             case -1:
-                this.direction.left();
+                this._direction.left();
                 break;
             case 1:
-                this.direction.right();
+                this._direction.right();
                 break;
         }
 
@@ -37,7 +37,7 @@ export default class Snake {
     }
 
     _getDirection() {
-        return 0;
+        return Math.round(Math.random()) * 2 -1;
     }
 }
 

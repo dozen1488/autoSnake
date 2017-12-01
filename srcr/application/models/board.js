@@ -5,8 +5,10 @@ import SellsMeaning from '../sharedConstants/SellsMeanind';
 
 export default class BoardModel {
 
-    constructor(x, y) {
-        this.board = new Array(x).fill(0).map(() => new Array(y).fill(SellsMeaning.Empty));
+    constructor(x, y, deadSnakeCallback) {
+        this.board = new Array(x)
+            .fill(0)
+            .map(() => new Array(y).fill(SellsMeaning.Empty));
 
         this.snake = new Snake({
             x: Math.round(x/2), 
@@ -21,6 +23,7 @@ export default class BoardModel {
         );
         
         this.didSnakeEatLustTurn = false;
+        this.deadSnakeCallback = deadSnakeCallback;
     }
 
     appendWall(x, y) {
@@ -34,9 +37,9 @@ export default class BoardModel {
     }
 
     updateState(){
-        const {head, tail} = this.snake.move(this.didSnakeEatLustTurn);
+        const {head, deleted: tail} = this.snake.move(this.didSnakeEatLustTurn);
 
-        const gameOverCondition = (this.board[x][y] === SellsMeaning.Wall) || 
+        const gameOverCondition = (this.board[head.x][head.y] === SellsMeaning.Wall) || 
             head.x > this.board.length ||
             head.y > _.first(this.board).length
         if(gameOverCondition) {
@@ -48,10 +51,11 @@ export default class BoardModel {
         this.board[head.x][head.y] = SellsMeaning.SnakeHead;
         if(tail) this.board[tail.x][tail.y] = SellsMeaning.Empty;
 
-        return {head, tail};
+        return _.compact([head, tail]);
     }
 
     gameOver() {
+        this.deadSnakeCallback();
         alert('Game Over');
     }    
 

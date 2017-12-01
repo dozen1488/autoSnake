@@ -1,8 +1,8 @@
 import React from 'react';
 import _ from 'lodash';
 
-import {onHover, onClick, onRelease} from '../data/actions';
-import store from '../data/store'; 
+import {onHover, onClick, onRelease, initStore} from '../actions/actions';
+import store from '../stores/store'; 
 import SellsMeaning from '../sharedConstants/SellsMeanind';
 import BoardModel from '../models/board';
 
@@ -10,18 +10,20 @@ export default class Board extends React.Component {
 
     constructor(...args) {
         super(...args);
-        this.squareRefs = new Array(50)
+        initStore(this.props.x, this.props.y);
+        this.squareRefs = new Array(this.props.x)
             .fill(null, 0)
-            .map(() => new Array(50));
+            .map(() => new Array(this.props.y));
     }
 
     componentDidMount() {
         store.addListener(
             () => {
                 const board = store.getState();
-                const {x, y} = board.changedSquare;
-                this.squareRefs[x][y]({
-                    status: board.board.board[x][y]
+                board.changedSquare.forEach( ({x, y}) => {
+                    this.squareRefs[x][y]({
+                        status: board.board.board[x][y]
+                    });
                 });
             }
         )
@@ -52,7 +54,7 @@ export default class Board extends React.Component {
     }
 
     render() {
-        const table = this.renderTable(50, 50);
+        const table = this.renderTable(this.props.x, this.props.y);
         return (
             <table className="Board">
                 <tbody>     
