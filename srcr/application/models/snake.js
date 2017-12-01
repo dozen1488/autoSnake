@@ -8,7 +8,11 @@ export default class Snake {
     }
 
     get tail() {
-        return this._tail;
+        return _.cloneDeep(this._tail);
+    }
+
+    get head() {
+        return _.cloneDeep(_.head(this._tail));
     }
 
     move(withIncrement) {

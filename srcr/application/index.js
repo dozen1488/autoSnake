@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom';
 import Container from './views/board';
 
 window.ApplicationConfig = {
-    x: 100,
-    y: 100
+    x: 20,
+    y: 20
 };
 
 document.addEventListener('contextmenu', event => { 
