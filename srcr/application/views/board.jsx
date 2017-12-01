@@ -82,8 +82,8 @@ class Square extends React.Component {
                 onMouseOver={() => {
                     onHover(this.props.x, this.props.y);
                 }}
-                onMouseDown={() => {
-                    onClick(this.props.x, this.props.y);
+                onMouseDown={({button}) => {
+                    onClick(this.props.x, this.props.y, button);
                 }}
                 onMouseUp={() => {
                     onRelease();

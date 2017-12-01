@@ -7,9 +7,9 @@ export function impulseBoard(){
     });
 }
 
-export function onClick(x, y){
+export function onClick(x, y, buttonNumber){
     Dispatcher.dispatch({
-        x, y, type: ActionTypes.onClick
+        x, y, type: ActionTypes.onClick, buttonType: buttonNumber
     });
 }
 

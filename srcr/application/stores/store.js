@@ -22,7 +22,15 @@ class Store extends ReduceStore {
         const actionMap = {
             onClick: () => {
                 state.isMouseClicked = true;
-                state.changedSquare = [state.board.appendWall(action.x, action.y)];
+                if(action.buttonType === 0){
+                    state.changedSquare = [
+                        state.board.appendWall(action.x, action.y)
+                    ];
+                } else {
+                    state.changedSquare = [
+                        state.board.appendFood(action.x, action.y)
+                    ];
+                }
                 this.__emitChange();
             },
             onHover: () => {

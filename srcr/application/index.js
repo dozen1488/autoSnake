@@ -8,6 +8,11 @@ window.ApplicationConfig = {
     y: 100
 };
 
+document.addEventListener('contextmenu', event => { 
+    event.preventDefault();
+    return false;
+});
+
 ReactDOM.render(<Container 
     x={window.ApplicationConfig.x} 
     y={window.ApplicationConfig.y}

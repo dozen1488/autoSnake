@@ -40,6 +40,7 @@ export default class BoardModel {
         const {head, deleted: tail} = this.snake.move(this.didSnakeEatLustTurn);
 
         const gameOverCondition = (this.board[head.x][head.y] === SellsMeaning.Wall) || 
+            (this.board[head.x][head.y] === SellsMeaning.SnakeTail)
             head.x > this.board.length ||
             head.y > _.first(this.board).length
         if(gameOverCondition) {
@@ -48,10 +49,20 @@ export default class BoardModel {
 
         this.didSnakeEatLustTurn = (this.board[head.x][head.y] === SellsMeaning.Food) ?
             true : false;
-        this.board[head.x][head.y] = SellsMeaning.SnakeHead;
+        this.printSnakeTail();
         if(tail) this.board[tail.x][tail.y] = SellsMeaning.Empty;
+        
+        return _.compact(_.concat(this.snake.tail, [tail]));
+    }
 
-        return _.compact([head, tail]);
+    printSnakeTail() {
+        this.snake.tail.forEach(
+            ({x, y}, index) => {
+                (this.board[x])[y] = (index === 0) ? 
+                    SellsMeaning.SnakeHead :
+                    SellsMeaning.SnakeTail
+            }
+        );
     }
 
     gameOver() {
