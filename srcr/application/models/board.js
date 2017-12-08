@@ -1,20 +1,27 @@
 import _ from 'lodash';
 import {Layer, Network} from 'synaptic';
 
-import Snake from './snake';
+import {Snake, DIRECTIONS} from './snake';
 import SellsMeaning from '../sharedConstants/SellsMeanind';
 
 export default class BoardModel {
 
-    constructor(x, y, deadSnakeCallback) {
-        this.board = new Array(x)
+    constructor(
+        {sizeOfX, sizeOfY}, //Size
+        {network, radiusOfVisionForNetwork} //Network settings
+    ) {
+        this.board = new Array(sizeOfX)
             .fill(0)
-            .map(() => new Array(y).fill(SellsMeaning.Empty));
+            .map(() => new Array(sizeOfY).fill(SellsMeaning.Empty));
 
-        this.snake = new Snake({
-            x: Math.round(x/2), 
-            y: Math.round(y/2)
-        });
+        this.snake = new Snake(
+            {
+                x: Math.round(sizeOfX/2), 
+                y: Math.round(sizeOfY/2),
+            },
+            network
+        );
+
         this.snake.tail.forEach(
             ({x, y}, index) => {
                 (this.board[x])[y] = (index === 0) ? 
@@ -23,11 +30,10 @@ export default class BoardModel {
             }
         );
         
-        this.radiusOfVision = 1;
+        this.radiusOfVisionForNetwork = radiusOfVisionForNetwork;
         this.path = [];
 
         this.didSnakeEatLustTurn = false;
-        this.deadSnakeCallback = deadSnakeCallback;
     }
 
     appendWall(x, y) {
@@ -41,31 +47,50 @@ export default class BoardModel {
     }
 
     updateState(){
-        const {head, deleted: tail} = this.snake.move(this.didSnakeEatLustTurn);
+        const boardSnap = this._snapshotBoardAroundSnake(
+            this.radiusOfVisionForNetwork,
+            this.snake.direction
+        );
+        const changedSquares = [];
 
-        const gameOverCondition = (this.board[head.x][head.y] === SellsMeaning.Wall) || 
-            (this.board[head.x][head.y] === SellsMeaning.SnakeTail)
-            head.x > this.board.length ||
-            head.y > _.first(this.board).length
-        if(gameOverCondition) {
-            this.gameOver();
-        }
+        changedSquares.push(this.snake.head);
+        if (!this.didSnakeEatLustTurn) changedSquares.push(this.snake.end);
 
-        this.didSnakeEatLustTurn = (this.board[head.x][head.y] === SellsMeaning.Food) ?
-            true : false;
-        this.printSnakeTail();
-        if(tail){ 
+        const {head, turn} = this.snake.move(
+            this.didSnakeEatLustTurn, 
+            boardSnap
+        );
+
+        changedSquares.push(this.snake.head);
+
+        if(!this.didSnakeEatLustTurn) {
+            changedSquares.push(this.snake.end);
+            const tail = this.snake.end;
             this.board[tail.x][tail.y] = SellsMeaning.Empty;
         }
 
-        if(this.didSnakeEatLustTurn) this.saveImage(1);
-        else if(gameOverCondition) this.saveImage(-1);
-        else this.saveImage(0);
+        const gameOverCondition = !this._isPointValid(
+            head.x, head.y
+        );
+
+        this.didSnakeEatLustTurn = (this.board[head.x][head.y] === SellsMeaning.Food);
+
+        this._printSnakeTail();
+
+        if(this.didSnakeEatLustTurn) this._saveSnapshotForNetwork(boardSnap, 1, turn);
+        else if(gameOverCondition) this._saveSnapshotForNetwork(boardSnap, -1, turn);
+        else this._saveSnapshotForNetwork(boardSnap, 0, turn);
         
-        return _.compact(_.concat(this.snake.tail, [tail]));
+
+        return (gameOverCondition) ? 
+            this.gameOver():
+            {
+                isGameOver: false,
+                changedSquares: changedSquares
+            };
     }
 
-    printSnakeTail() {
+    _printSnakeTail() {
         this.snake.tail.forEach(
             ({x, y}, index) => {
                 (this.board[x])[y] = (index === 0) ? 
@@ -75,68 +100,106 @@ export default class BoardModel {
         );
     }
 
-    saveImage(result) {
-        let image = new Array((this.radiusOfVision * 2 + 1) * (this.radiusOfVision * 2 + 1));
+    _snapshotBoardAroundSnake(snapshotRadius, snakeDirection) {
+        let image = new Array(
+            (snapshotRadius * 2 + 1) * (snapshotRadius * 2 + 1)
+        );
         const {x: middleX, y: middleY} = this.snake.head;
 
         let iteration = 0;
-        for(let x = middleX - this.radiusOfVision; x <= (this.radiusOfVision + middleX); x++) {
-            for(let y = middleY - this.radiusOfVision; y <= (this.radiusOfVision + middleY); y++) {
-                if(
-                    (x < 0) || 
-                    (x > this.board.length - 1) ||
-                    (y < 0) ||
-                    (y > _.first(this.board).length - 1) || 
-                    this.board[x][y] === SellsMeaning.SnakeTail || 
-                    this.board[x][y] === SellsMeaning.Wall
-                ) {
-                    image[iteration++] = -1;
-                } else if(this.board[x][y] === SellsMeaning.Food) {
-                    image[iteration++] = 1;
-                } else {
-                    image[iteration++] = 0;
-                }
+        let fromX, toX, fromY, toY;
+
+        switch (snakeDirection) {
+            case DIRECTIONS.LEFT:
+                fromX = middleX - snapshotRadius;
+                toX = snapshotRadius + middleX;
+                fromY = middleY - snapshotRadius;
+                toY = snapshotRadius + middleY;
+            break;
+            case DIRECTIONS.RIGHT:
+                fromX = snapshotRadius + middleX;
+                toX = middleX - snapshotRadius;
+                fromY = middleY - snapshotRadius;
+                toY = snapshotRadius + middleY;
+            break;
+            case DIRECTIONS.UP:
+                fromX = middleX - snapshotRadius;
+                toX = snapshotRadius + middleX;
+                fromY = snapshotRadius + middleY;
+                toY = middleY - snapshotRadius;
+            break;
+            case DIRECTIONS.DOWN:
+                fromX = snapshotRadius + middleX;
+                toX = middleX - snapshotRadius;
+                fromY = snapshotRadius + middleY;
+                toY = middleY - snapshotRadius;
+            break;
+        }
+
+        const action = (x, y) => {
+            if(
+                this._isPointValid(x, y)
+            ) {
+                image[iteration++] = -1;
+            } else if(this.board[x][y] === SellsMeaning.Food) {
+                image[iteration++] = 1;
+            } else {
+                image[iteration++] = 0;
             }
         }
+        
+        this._takeArraysFromTo(fromX, toX, fromY, toY, action);
+
+        return image;
+    }
+
+    _saveSnapshotForNetwork(snapshot, result, direction) {
         this.path.push({
             result,
-            image
+            image: snapshot,
+            decision: direction
         });
     }
 
-    gameOver() {
-        sendImages(this.path);
-        this.deadSnakeCallback();
-        alert('Game Over');
+    _gameOver() {
+        return {
+            isGameOver: true,
+            images: this.path
+        };
     }    
 
-}
+    _isPointValid(x, y) {
+        return !(
+            (x < 0) || 
+            (x > this.board.length - 1) ||
+            (y < 0) ||
+            (y > _.first(this.board).length - 1) ||
+            (this.board[x][y] === SellsMeaning.Wall) || 
+            (this.board[x][y] === SellsMeaning.SnakeTail)
+        );
+    }
 
-function sendImages(images) {
-    fetch(
-        '/applyImages', 
-        {
-            method: 'POST',
-            body: JSON.stringify(images),
-            headers: {
-                "Content-type": "application/json"
+    _takeArraysFromTo(fromX, toX, fromY, toY, action) {
+        let inc = (x) => ++x;
+        let dec = (x) => --x;
+
+        let xAction, yAction;
+        if(fromX >= toX) {
+            xAction = inc;
+        } else {
+            xAction = dec; 
+        }
+        if(fromY, toY) {
+            yAction = inc;
+        } else {
+            yAction = dec; 
+        }
+
+        for(let x = fromX; x <= toX; x = xAction(x)) {
+            for(let y = fromY; y <= toY; y = yAction(y)) {
+                action(x,y);
             }
         }
-    ).then(() => console.log('ok'));
-}
+    }
 
-function generate(n){
-    const size = (n * 2 + 1) * (n * 2 + 1);
-    const inputLayer = new Layer(size);
-    const hiddenLayer = new Layer(size);
-    const outputLayer = new Layer(size);
-
-    inputLayer.project(hiddenLayer);
-    hiddenLayer.project(outputLayer);
-
-    const myNetwork = new Network({
-        input: inputLayer,
-        hidden: [hiddenLayer],
-        output: outputLayer
-    });
 }

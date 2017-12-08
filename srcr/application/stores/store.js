@@ -5,7 +5,7 @@ import { stopImpulse } from '../actions/actions';
 import Dispatcher from '../dispatcher/dispatcher';
 import actionTypes from '../actions/actionTypes';
 import BoardModel from "../models/board";
-import pulse from '../managers/pulseGenerator';
+import { Impulser, Requester } from '../managers/singletoneManagers';
 
 class Store extends ReduceStore {
     constructor() {
@@ -13,16 +13,32 @@ class Store extends ReduceStore {
     }
 
     getInitialState() {
-        return {
-            board: new BoardModel(2, 2),
-            isMouseWallClicked: false,
-            isMouseFoodClicked: false,
-            changedSquare: []
-        };
+        return {};
     }
 
     reduce(state, action) {
         const actionMap = {
+            networkReady: () => {
+                state ={
+                    board: new BoardModel(
+                        {
+                            sizeOfX: state.x, 
+                            sizeOfY: state.y, 
+                        }, {
+                            network: action.network,
+                            radiusOfVisionForNetwork: state.radiusOfVisionForNetwork
+                        }
+                    ),
+                    isMouseClicked: false,
+                    isMouseFoodClicked: false,
+                    changedSquare: []
+                }
+            },
+
+            onRelease: () => {
+                state.isMouseClicked = false;
+                state.isMouseFoodClicked = false; 
+            },
             onClick: () => {
                 if(action.buttonType === MouseButtons.leftButton) {
                     state.isMouseClicked = true;
@@ -46,32 +62,32 @@ class Store extends ReduceStore {
                     this.__emitChange();
                 }
             },
-            onRelease: () => {
-                state.isMouseClicked = false;
-                state.isMouseFoodClicked = false; 
-            },
+
             impulseBoard: () => {
-                state.changedSquare = state.board.updateState();
+                const {isGameOver, changedSquares} = state.board.updateState();
+                if(!isGameOver) state.changedSquare = changedSquares;
                 this.__emitChange();
             },
+
             initStore: () => {
                 state ={
-                    board: new BoardModel(
-                        action.x, 
-                        action.y, 
-                        pulse.stopImpulsing.bind(pulse)
-                    ),
+                    x: action.x, 
+                    y: action.y, 
+                    radiusOfVisionForNetwork: action.radiusOfVisionForNetwork,
                     isMouseClicked: false,
                     isMouseFoodClicked: false,
                     changedSquare: []
                 }
             }
         };
+        
         if(actionMap[action.type]){
             actionMap[action.type]();
         }
         return state;
     }
 };
+
+
 
 export default new Store();

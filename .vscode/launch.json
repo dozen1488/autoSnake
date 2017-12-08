@@ -8,8 +8,17 @@
         {
             "type": "node",
             "request": "launch",    
-            "name": "Launch Program",
+            "name": "server",
             "program": "${workspaceFolder}/server/server.js",
+            "cwd": "${workspaceFolder}/server",
+            "env": {
+                "DEBUG": "express:*"
+            }
+        },{
+            "type": "node",
+            "request": "launch",    
+            "name": "trainer",
+            "program": "${workspaceFolder}/server/neiroTrainer.js",
             "cwd": "${workspaceFolder}/server",
             "env": {
                 "DEBUG": "express:*"

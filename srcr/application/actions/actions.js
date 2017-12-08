@@ -25,9 +25,9 @@ export function onRelease(){
     });
 }
 
-export function initStore(x, y) {
+export function initStore(x, y, radiusOfVisionForNetwork) {
     Dispatcher.dispatch({
-        x, y, type: ActionTypes.initStore,
+        x, y, type: ActionTypes.initStore, radiusOfVisionForNetwork
     });
 }
 
@@ -35,4 +35,10 @@ export function stopImpulse() {
     Dispatcher.dispatch({
         type: ActionTypes.stopImpulse,
     });
+}
+
+export function networkReady(network) {
+    Dispatcher.dispatch({
+        type: ActionTypes.networkReady, network
+    })
 }
