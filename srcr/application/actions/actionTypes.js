@@ -7,5 +7,6 @@ export default keymirror({
     "onHover": null,
     "onRelease": null, 
     "initStore": null,
-    "networkReady": null
+    "networkReady": null,
+    "keyPressed": null
 });

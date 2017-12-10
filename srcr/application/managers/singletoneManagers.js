@@ -6,12 +6,17 @@ class Impulser {
         this.frequency = frequency;
     }
 
+    isImpulsing() {
+        return !!this.timer;
+    }
+    
     startImpulsing(action) {
         this.timer = setInterval(action, this.frequency);
     }
 
     stopImpulsing() {
         clearInterval(this.timer);
+        this.timer = null;
     }
 }
 
@@ -44,9 +49,31 @@ class Requester {
 
 }
 
+class KeyboardListener {
+    constructor(code = "Space") {
+        this._code = code;
+        this._listener = null;
+    }
+
+    startListening(callback) {
+        this._listener = document.addEventListener('keydown', (event) => {
+            if(event.code === this._code) {
+                callback(event.code);
+            }
+        }, true);
+    }
+
+    stopListening() {
+        document.removeEventListener(this._listener);
+    }
+
+}
 const imp = new Impulser();
 const reg = new Requester();
+const key = new KeyboardListener();
+
 export {
     imp as Impulser,
-    reg as Requester
+    reg as Requester,
+    key as KeyboardListener
 };

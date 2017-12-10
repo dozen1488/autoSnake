@@ -1,11 +1,11 @@
 import { ReduceStore } from 'flux/utils';
+import _ from 'lodash';
 
 import MouseButtons from '../sharedConstants/MouseClickMeaning';
 import { stopImpulse } from '../actions/actions';
 import Dispatcher from '../dispatcher/dispatcher';
 import actionTypes from '../actions/actionTypes';
 import BoardModel from "../models/board";
-import { Impulser, Requester } from '../managers/singletoneManagers';
 
 class Store extends ReduceStore {
     constructor() {
@@ -19,7 +19,7 @@ class Store extends ReduceStore {
     reduce(state, action) {
         const actionMap = {
             networkReady: () => {
-                state ={
+                state = _.merge({
                     board: new BoardModel(
                         {
                             sizeOfX: state.x, 
@@ -28,11 +28,8 @@ class Store extends ReduceStore {
                             network: action.network,
                             radiusOfVisionForNetwork: state.radiusOfVisionForNetwork
                         }
-                    ),
-                    isMouseClicked: false,
-                    isMouseFoodClicked: false,
-                    changedSquare: []
-                }
+                    )
+                }, _.cloneDeep(dafaultStore));
             },
 
             onRelease: () => {
@@ -64,20 +61,29 @@ class Store extends ReduceStore {
             },
 
             impulseBoard: () => {
-                const {isGameOver, changedSquares} = state.board.updateState();
-                if(!isGameOver) state.changedSquare = changedSquares;
+                const {isGameOver, changedSquares, images} = state.board.updateState();
+                if(!isGameOver) {
+                    state.changedSquare = changedSquares;
+                }else {
+                    state.images = images;
+                    state.isGameOver = isGameOver;
+                }
                 this.__emitChange();
             },
 
             initStore: () => {
-                state ={
+                state = _.merge({
                     x: action.x, 
                     y: action.y, 
-                    radiusOfVisionForNetwork: action.radiusOfVisionForNetwork,
-                    isMouseClicked: false,
-                    isMouseFoodClicked: false,
-                    changedSquare: []
+                    radiusOfVisionForNetwork: action.radiusOfVisionForNetwork
+                }, _.cloneDeep(dafaultStore));
+            },
+
+            keyPressed: () => {
+                if(action.key === "Space"){
+                    state.isPaused = !state.isPaused;
                 }
+                this.__emitChange();
             }
         };
         
@@ -88,6 +94,12 @@ class Store extends ReduceStore {
     }
 };
 
-
+const dafaultStore = {
+    isMouseClicked: false,
+    isMouseFoodClicked: false,
+    isGameOver: false,
+    isPaused: false,
+    changedSquare: []
+}
 
 export default new Store();

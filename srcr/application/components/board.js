@@ -4,7 +4,7 @@ import * as actions from '../actions/actions';
 import store from '../stores/store'; 
 import render from '../views/board';
 import spinner from "../views/spinner";
-import {Requester, Impulser} from '../managers/singletoneManagers'; 
+import {Requester, Impulser, KeyboardListener} from '../managers/singletoneManagers'; 
 
 export default class Board extends React.Component {
 
@@ -34,9 +34,20 @@ export default class Board extends React.Component {
 
         let listener = store.addListener(() => {
             listener.remove();
-            store.addListener(
+            KeyboardListener.startListening(actions.keyPressed);
+            let innerListener = store.addListener(
                 () => {
                     const board = store.getState();
+                    if(board.isGameOver) {
+                        Impulser.stopImpulsing();
+                        Requester.sendImages(board.images);
+                        innerListener.remove();
+                    }
+                    if(board.isPaused && Impulser.isImpulsing()) {
+                        Impulser.stopImpulsing();
+                    } else if(!board.isPaused && !Impulser.isImpulsing()) {
+                        Impulser.startImpulsing(actions.impulseBoard);
+                    }
                     board.changedSquare.forEach( ({x, y}) => {
                         this.squareUpdateFunctions[x][y]({
                             status: board.board.board[x][y]

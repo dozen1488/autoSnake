@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {Layer, Network} from 'synaptic';
+import rotate from 'matrix-rotate';
 
 import {Snake, DIRECTIONS} from './snake';
 import SellsMeaning from '../sharedConstants/SellsMeanind';
@@ -51,43 +52,42 @@ export default class BoardModel {
             this.radiusOfVisionForNetwork,
             this.snake.direction
         );
-        const changedSquares = [];
 
-        changedSquares.push(this.snake.head);
-        if (!this.didSnakeEatLustTurn) changedSquares.push(this.snake.end);
+        const lastHead = this.snake.head;
+        const lastTail = this.snake.end;
 
         const {head, turn} = this.snake.move(
             this.didSnakeEatLustTurn, 
             boardSnap
         );
 
-        changedSquares.push(this.snake.head);
+        const newHead = this.snake.head;
+        const newTail = this.snake.end;
 
         if(!this.didSnakeEatLustTurn) {
-            changedSquares.push(this.snake.end);
-            const tail = this.snake.end;
-            this.board[tail.x][tail.y] = SellsMeaning.Empty;
+            this.board[lastTail.x][lastTail.y] = SellsMeaning.Empty;
         }
 
         const gameOverCondition = !this._isPointValid(
             head.x, head.y
         );
 
+        if(gameOverCondition) {
+            this._saveSnapshotForNetwork(boardSnap, -1, turn);
+            return this._gameOver();
+        }
+
         this.didSnakeEatLustTurn = (this.board[head.x][head.y] === SellsMeaning.Food);
 
         this._printSnakeTail();
 
         if(this.didSnakeEatLustTurn) this._saveSnapshotForNetwork(boardSnap, 1, turn);
-        else if(gameOverCondition) this._saveSnapshotForNetwork(boardSnap, -1, turn);
         else this._saveSnapshotForNetwork(boardSnap, 0, turn);
         
-
-        return (gameOverCondition) ? 
-            this.gameOver():
-            {
-                isGameOver: false,
-                changedSquares: changedSquares
-            };
+        return {
+            isGameOver: false,
+            changedSquares: [lastHead, lastTail, newHead, newTail]
+        };
     }
 
     _printSnakeTail() {
@@ -101,56 +101,47 @@ export default class BoardModel {
     }
 
     _snapshotBoardAroundSnake(snapshotRadius, snakeDirection) {
-        let image = new Array(
-            (snapshotRadius * 2 + 1) * (snapshotRadius * 2 + 1)
-        );
+        let image = new Array((snapshotRadius * 2 + 1))
+            .fill(0)
+            .map(() => new Array((snapshotRadius * 2 + 1)).fill(0));
         const {x: middleX, y: middleY} = this.snake.head;
 
-        let iteration = 0;
-        let fromX, toX, fromY, toY;
+        for(let x = middleX - snapshotRadius, inX = 0; 
+            x <= (snapshotRadius + middleX); 
+            x++, inX++
+        ) {
+            for(let y = middleY - snapshotRadius, inY = 0; 
+                y <= (snapshotRadius + middleY); 
+                y++, inY++
+            ) {
+                if(!this._isPointValid(x, y)) {
+                    image[inX][inY] = -1;
+                } else if(this.board[x][y] === SellsMeaning.Food) {
+                    image[inX][inY] = 1;
+                } else {
+                    image[inX][inY] = 0;
+                }
+            }
+        }
 
         switch (snakeDirection) {
             case DIRECTIONS.LEFT:
-                fromX = middleX - snapshotRadius;
-                toX = snapshotRadius + middleX;
-                fromY = middleY - snapshotRadius;
-                toY = snapshotRadius + middleY;
             break;
             case DIRECTIONS.RIGHT:
-                fromX = snapshotRadius + middleX;
-                toX = middleX - snapshotRadius;
-                fromY = middleY - snapshotRadius;
-                toY = snapshotRadius + middleY;
+                rotate(image);
+                rotate(image);
             break;
             case DIRECTIONS.UP:
-                fromX = middleX - snapshotRadius;
-                toX = snapshotRadius + middleX;
-                fromY = snapshotRadius + middleY;
-                toY = middleY - snapshotRadius;
+                rotate(image);
             break;
             case DIRECTIONS.DOWN:
-                fromX = snapshotRadius + middleX;
-                toX = middleX - snapshotRadius;
-                fromY = snapshotRadius + middleY;
-                toY = middleY - snapshotRadius;
+                rotate(image);
+                rotate(image);
+                rotate(image);
             break;
         }
 
-        const action = (x, y) => {
-            if(
-                this._isPointValid(x, y)
-            ) {
-                image[iteration++] = -1;
-            } else if(this.board[x][y] === SellsMeaning.Food) {
-                image[iteration++] = 1;
-            } else {
-                image[iteration++] = 0;
-            }
-        }
-        
-        this._takeArraysFromTo(fromX, toX, fromY, toY, action);
-
-        return image;
+        return _.flatten(image);
     }
 
     _saveSnapshotForNetwork(snapshot, result, direction) {
@@ -177,29 +168,6 @@ export default class BoardModel {
             (this.board[x][y] === SellsMeaning.Wall) || 
             (this.board[x][y] === SellsMeaning.SnakeTail)
         );
-    }
-
-    _takeArraysFromTo(fromX, toX, fromY, toY, action) {
-        let inc = (x) => ++x;
-        let dec = (x) => --x;
-
-        let xAction, yAction;
-        if(fromX >= toX) {
-            xAction = inc;
-        } else {
-            xAction = dec; 
-        }
-        if(fromY, toY) {
-            yAction = inc;
-        } else {
-            yAction = dec; 
-        }
-
-        for(let x = fromX; x <= toX; x = xAction(x)) {
-            for(let y = fromY; y <= toY; y = yAction(y)) {
-                action(x,y);
-            }
-        }
     }
 
 }

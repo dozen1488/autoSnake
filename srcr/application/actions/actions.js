@@ -40,5 +40,11 @@ export function stopImpulse() {
 export function networkReady(network) {
     Dispatcher.dispatch({
         type: ActionTypes.networkReady, network
-    })
+    });
+}
+
+export function keyPressed(key) {
+    Dispatcher.dispatch({
+        type: ActionTypes.keyPressed, key
+    });
 }

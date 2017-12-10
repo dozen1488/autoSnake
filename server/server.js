@@ -40,18 +40,18 @@ console.log('Server is listening on port ' + PORT);
 console.log('PID is ' + process.pid);
 
 process
-.on('SIGINT', () => {
-    saveImages(neiroArray);
-})
-.on('SIGTERM', () => {
-    saveImages(neiroArray);
-});
+    .on('SIGINT', () => {
+        saveImages(neiroArray);
+    })
+    .on('SIGTERM', () => {
+        saveImages(neiroArray);
+    });
 
 function readImages() {
-    return JSON.parse(fs.readFileSync(IMAGES_FILE_NAME));
+    return _.uniqWith(JSON.parse(fs.readFileSync(IMAGES_FILE_NAME)), _.isEqual);
 }
 
 function saveImages(images) {
-    fs.writeFileSync(IMAGES_FILE_NAME, JSON.stringify(images, null, '\t'));
+    fs.writeFileSync(IMAGES_FILE_NAME, JSON.stringify(_.uniqWith(images, _.isEqual), null, '\t'));
     process.exit(0);
 }

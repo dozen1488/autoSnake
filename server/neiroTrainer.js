@@ -2,27 +2,31 @@ const {Layer, Network} = require('synaptic');
 const _ = require('lodash');
 
 function trainNetwork(images = require('./images.json')) {
-    const myNetwork = generateNetwork(3);
+    images = images.filter(img => img.result !== 0);
+    const myNetwork = generateNetwork(1);
     
     const learningRate = 0.1;
     let img = 0;
-    for (let i = 0; i < 200; i++) {
-        myNetwork.activate(images[img].image);
-        let resultArray = [0, 0, 0];
-        switch(images[img].result) {
-            case -1:
-                resultArray[images[img].decision + 1] = -1;
-            break;
-            case 1:
-                resultArray[images[img].decision + 1] = 1;
-            break;
+    do {
+        for (let i = 0; i < 5000; i++) {
+            let neiroDesition = myNetwork.activate(images[img].image);
+            switch(images[img].result) {
+                case -1:
+                    neiroDesition = [1, 1, 1];
+                    neiroDesition[images[img].decision + 1] = 0;
+                break;
+                case 1:
+                    neiroDesition = [0, 0, 0];
+                    neiroDesition[images[img].decision + 1] = 1;
+                break;
+            }
+            myNetwork.propagate(learningRate, neiroDesition);    
+        
+            if(++img >= images.length) {
+                img = 0;
+            }
         }
-        myNetwork.propagate(learningRate, resultArray);    
-    
-        if(++img >= images.length) {
-            img = 0;
-        }
-    }
+    } while(checkDesitions(images, myNetwork))
     return myNetwork.toJSON();
 }
 
@@ -43,3 +47,48 @@ function generateNetwork(n){
 }
 
 module.exports = trainNetwork;
+
+function checkDesitions(images, network) {
+    const results = images.map(image => {
+        const desition = getTurn(image.image, network);
+        switch (image.result) {
+            case -1:
+                return desition !== image.decision;
+            break;
+            // case 0:
+            //     return desition == image.decision;
+            // break;
+            case 1:
+                return desition === image.decision;
+            break;
+        }
+        return true;
+    });
+    return _.reduce(results, (res, val) => {
+        return res + !val;
+    }, 0)
+}
+
+function getTurn(image, network) {
+    const networkAnswer = network.activate(image);
+
+    //Find an index of the most value in array
+    const {index: resultIndex} = networkAnswer.reduce(
+        ({index, maxValue}, currValue, currIndex) => {
+            if(currValue >= maxValue) {
+                return {
+                    index: currIndex,
+                    maxValue: currValue
+                }
+            } else {
+                return {index, maxValue};
+            }
+        },{
+            index: -1,
+            maxValue: -Infinity
+        }
+    );
+
+    //Map value to turn
+    return resultIndex - 1;
+}

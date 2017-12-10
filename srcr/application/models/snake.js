@@ -21,6 +21,10 @@ export class Snake {
         return _.cloneDeep(_.last(this._tail));
     }
 
+    get direction() {
+        return this._direction.direction;
+    }
+
     move(withIncrement, environment) {
         const turn = this._getTurn(environment);
         switch (turn) {
@@ -82,7 +86,7 @@ class Direction {
     }
 
     get direction() {
-        return dir;
+        return this._dir;
     }
     
     left() {
