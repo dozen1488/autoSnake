@@ -1,12 +1,12 @@
 const {Layer, Network} = require('synaptic');
 const _ = require('lodash');
 
-function trainNetwork(images = require('./images.json')) {
-    images = images.filter(img => img.result !== 0);
+function trainNetwork(images = require('./images.json')) {  
     const myNetwork = generateNetwork(1);
     
     const learningRate = 0.1;
     let img = 0;
+    let tryNumber = 20;
     do {
         for (let i = 0; i < 5000; i++) {
             let neiroDesition = myNetwork.activate(images[img].image);
@@ -26,7 +26,8 @@ function trainNetwork(images = require('./images.json')) {
                 img = 0;
             }
         }
-    } while(checkDesitions(images, myNetwork))
+    } while(checkDesitions(images, myNetwork) && tryNumber-- !== 0)
+    if(tryNumber === 0) console.log('Network untrainable');
     return myNetwork.toJSON();
 }
 

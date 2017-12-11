@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {Layer, Network} from 'synaptic';
-import rotate from 'matrix-rotate';
+import rotateMatrix from 'rotate-matrix';
 
 import {Snake, DIRECTIONS} from './snake';
 import SellsMeaning from '../sharedConstants/SellsMeanind';
@@ -128,16 +128,13 @@ export default class BoardModel {
             case DIRECTIONS.LEFT:
             break;
             case DIRECTIONS.RIGHT:
-                rotate(image);
-                rotate(image);
+                image = rotateMatrix(image, 2);
             break;
             case DIRECTIONS.UP:
-                rotate(image);
+                image = rotateMatrix(image, 3);
             break;
             case DIRECTIONS.DOWN:
-                rotate(image);
-                rotate(image);
-                rotate(image);
+                image = rotateMatrix(image);
             break;
         }
 

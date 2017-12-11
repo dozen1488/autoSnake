@@ -34,6 +34,7 @@
         "react": "^16.1.1",
         "react-dom": "^16.1.1",
         "react-router": "^4.2.0",
+        "rotate-matrix": "0.0.3",
         "synaptic": "^1.1.4"
     }
 }
