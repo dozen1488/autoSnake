@@ -2,32 +2,35 @@ const {Layer, Network} = require('synaptic');
 const _ = require('lodash');
 
 function trainNetwork(images = require('./images.json')) {  
-    const myNetwork = generateNetwork(1);
+    const myNetwork = generateNetwork(3);
     
-    const learningRate = 0.1;
-    let img = 0;
-    let tryNumber = 20;
-    do {
-        for (let i = 0; i < 5000; i++) {
-            let neiroDesition = myNetwork.activate(images[img].image);
-            switch(images[img].result) {
-                case -1:
-                    neiroDesition = [1, 1, 1];
-                    neiroDesition[images[img].decision + 1] = 0;
-                break;
-                case 1:
-                    neiroDesition = [0, 0, 0];
-                    neiroDesition[images[img].decision + 1] = 1;
-                break;
+    if(images.length > 0) {
+        const learningRate = 0.1;
+        let img = 0;
+        let tryNumber = 20;
+        do {
+            for (let i = 0; i < 5000; i++) {
+                let neiroDesition = myNetwork.activate(images[img].image);
+                switch(images[img].result) {
+                    case -1:
+                        neiroDesition = [1, 1, 1];
+                        neiroDesition[images[img].decision + 1] = 0;
+                    break;
+                    case 1:
+                        neiroDesition = [0, 0, 0];
+                        neiroDesition[images[img].decision + 1] = 1;
+                    break;
+                }
+                myNetwork.propagate(learningRate, neiroDesition);    
+            
+                if(++img >= images.length) {
+                    img = 0;
+                }
             }
-            myNetwork.propagate(learningRate, neiroDesition);    
-        
-            if(++img >= images.length) {
-                img = 0;
-            }
-        }
-    } while(checkDesitions(images, myNetwork) && tryNumber-- !== 0)
-    if(tryNumber === 0) console.log('Network untrainable');
+        } while(checkDesitions(images, myNetwork) && tryNumber-- !== 0)
+        if(tryNumber === 0) console.log('Network untrainable');
+    }
+
     return myNetwork.toJSON();
 }
 
