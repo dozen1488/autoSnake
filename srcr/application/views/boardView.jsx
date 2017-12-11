@@ -1,4 +1,4 @@
-import Square from './square';
+import Square from './squareView';
 import React from 'react';
 
 function renderTable(rows, columns, board, squareUpdateFunctions, actions) {

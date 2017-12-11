@@ -2,9 +2,9 @@ import React from 'react';
 
 import * as actions from '../actions/actions';
 import store from '../stores/store'; 
-import render from '../views/board';
-import spinner from "../views/spinner";
-import {Requester, Impulser, KeyboardListener} from '../managers/singletoneManagers'; 
+import render from '../views/boardView';
+import spinner from "../views/spinnerView";
+import {Requester, Impulser, KeyboardListener} from '../managers/externalManagers'; 
 
 export default class Board extends React.Component {
 
@@ -32,33 +32,39 @@ export default class Board extends React.Component {
             network: STATES.WAITING_FOR_NETWORK
         };
 
-        let listener = store.addListener(() => {
-            listener.remove();
-            KeyboardListener.startListening(actions.keyPressed);
-            let innerListener = store.addListener(
-                () => {
-                    const board = store.getState();
-                    if(board.isGameOver) {
-                        Impulser.stopImpulsing();
-                        Requester.sendImages(board.images);
-                        innerListener.remove();
-                    }
-                    if(board.isPaused && Impulser.isImpulsing()) {
-                        Impulser.stopImpulsing();
-                    } else if(!board.isPaused && !Impulser.isImpulsing()) {
-                        Impulser.startImpulsing(actions.impulseBoard);
-                    }
-                    board.changedSquare.forEach( ({x, y}) => {
-                        this.squareUpdateFunctions[x][y]({
-                            status: board.board.board[x][y]
-                        });
-                    });
-                }
-            );
+        let listener = store.addListener(
+            () => this.networkReadyHandler(listener)
+        );
+    }
 
+    networkReadyHandler(listener) {
+        listener.remove();
+        KeyboardListener.startListening(actions.keyPressed);
+        let innerListener = store.addListener(
+            () => this.changedStateHandler(innerListener)
+        );
+
+        Impulser.startImpulsing(actions.impulseBoard);
+
+        this.setState({network: STATES.RETRIEVED_NETWORK});
+    }
+
+    changedStateHandler(innerListener) {
+        const board = store.getState();
+        if(board.isGameOver) {
+            Impulser.stopImpulsing();
+            Requester.sendImages(board.images);
+            innerListener.remove();
+        }
+        if(board.isPaused && Impulser.isImpulsing()) {
+            Impulser.stopImpulsing();
+        } else if(!board.isPaused && !Impulser.isImpulsing()) {
             Impulser.startImpulsing(actions.impulseBoard);
-
-            this.setState({network: STATES.RETRIEVED_NETWORK});
+        }
+        board.changedSquare.forEach( ({x, y}) => {
+            this.squareUpdateFunctions[x][y]({
+                status: board.board.board[x][y]
+            });
         });
     }
 

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import {Layer, Network} from 'synaptic';
 import rotateMatrix from 'rotate-matrix';
 
-import {Snake, DIRECTIONS} from './snake';
+import {Snake, DIRECTIONS} from './snakeModel';
 import SellsMeaning from '../sharedConstants/SellsMeanind';
 
 export default class BoardModel {
