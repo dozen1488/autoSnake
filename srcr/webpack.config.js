@@ -3,6 +3,7 @@ const path = require("path");
 const webpack = require("webpack");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     context: __dirname + "/application",
@@ -33,11 +34,41 @@ module.exports = {
                 loader: "file-loader"
             },
             {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: "style-loader"
+                    },
+                    {
+                        loader: "css-loader"
+                    }
+                ]
+            },
+            {
+                test: /\.(html)$/,
+                use: {
+                    loader: 'html-loader',
+                    options: {
+                        attrs: [':data-src']
+                    }
+                }
+            },
+            {
                 test: /\.json$/,
                 loader: "json-loader"
             }
         ]
     },
+
+    plugins: [
+        new HtmlWebpackPlugin(
+            {
+                inject: false,
+                template: './index.html',
+                filename: 'index.html'
+            }
+        )
+    ]
 };
 
 if (process.env.NODE_ENV == "development") {

@@ -1,3 +1,6 @@
+import html from './index.html';
+import css from './index.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
