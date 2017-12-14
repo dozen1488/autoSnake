@@ -1,0 +1,33 @@
+#rootContainer {
+    width: 80%;
+    margin: auto;
+}
+
+.Container {
+    border: 4px #2e303f solid;
+    border-radius: 2%; 
+    padding: 2.5%;
+    background-color: #5a5e7f;
+    margin: auto;
+}
+
+.ReadmeHeader {
+    text-align: center;
+    margin: 0;
+    color: cornsilk;
+}
+
+.Board {
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.Square {
+    padding: 0;
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}

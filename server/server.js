@@ -48,7 +48,11 @@ process
     });
 
 function readImages() {
-    return _.uniqWith(JSON.parse(fs.readFileSync(IMAGES_FILE_NAME)), _.isEqual);
+    try {
+        return _.uniqWith(JSON.parse(fs.readFileSync(IMAGES_FILE_NAME)), _.isEqual);
+    } catch (ex) {
+        return [];
+    }
 }
 
 function saveImages(images) {

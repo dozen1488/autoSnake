@@ -3,6 +3,7 @@ import React from 'react';
 import * as actions from '../actions/actions';
 import store from '../stores/store'; 
 import render from '../views/boardView';
+import deadSnake from '../views/deadSnake'
 import spinner from "../views/spinnerView";
 import {Requester, Impulser, KeyboardListener} from '../managers/externalManagers'; 
 
@@ -16,12 +17,7 @@ export default class Board extends React.Component {
             this.props.y,
             this.props.radiusOfVisionForNetwork
         );
-
-        document.addEventListener('contextmenu', event => { 
-            event.preventDefault();
-            return false;
-        });
-
+        
         Requester.receiveNetwork(actions.networkReady);
 
         this.squareUpdateFunctions = new Array(this.props.x)
@@ -29,7 +25,7 @@ export default class Board extends React.Component {
             .map(() => new Array(this.props.y));
 
         this.state = {
-            network: STATES.WAITING_FOR_NETWORK
+            network: STATES.WAITING_FOR_NETWORK,
         };
 
         let listener = store.addListener(
@@ -37,8 +33,25 @@ export default class Board extends React.Component {
         );
     }
 
+    componentDidUpdate(prevState) {
+        if(
+            this.state.network === STATES.RETRIEVED_NETWORK &&
+            prevState.network !== STATES.RETRIEVED_NETWORK
+        ){
+        //Preventing contex menu from boards
+            [...document.getElementsByClassName('Board')]
+                .forEach( el => 
+                    el.addEventListener('contextmenu', event => { 
+                        event.preventDefault();
+                        return false;
+                    })
+                );
+        }
+    }
+
     networkReadyHandler(listener) {
         listener.remove();
+        
         KeyboardListener.startListening(actions.keyPressed);
         let innerListener = store.addListener(
             () => this.changedStateHandler(innerListener)
@@ -69,15 +82,20 @@ export default class Board extends React.Component {
     }
 
     render() {
-        return (this.state.network == STATES.RETRIEVED_NETWORK) ? 
-            render(
+        const state = store.getState();
+        if(state.isGameOver) {
+            return deadSnake();
+        } else if (this.state.network == STATES.RETRIEVED_NETWORK){
+            return render(
                 this.props.x,
                 this.props.y,
                 store.getState().board.board,
                 this.squareUpdateFunctions,
                 actions
-            ) :
-            spinner();
+            );
+        } else {
+            return spinner();
+        }
     }
 }
 
