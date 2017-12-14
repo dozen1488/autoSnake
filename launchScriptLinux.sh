@@ -1,5 +1,5 @@
 cd ./server
 ./server.js & 
 cd ../srcr
-run npm watch &
+npm run watch &
 chromium-browser "http://localhost:3002"

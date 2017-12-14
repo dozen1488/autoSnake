@@ -68,6 +68,7 @@ export default class Board extends React.Component {
             Impulser.stopImpulsing();
             Requester.sendImages(board.images);
             innerListener.remove();
+            this.forceUpdate();
         }
         if(board.isPaused && Impulser.isImpulsing()) {
             Impulser.stopImpulsing();
