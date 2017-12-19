@@ -3,9 +3,9 @@ import {Layer, Network} from 'synaptic';
 import rotateMatrix from 'rotate-matrix';
 
 import {Snake, DIRECTIONS} from './snakeModel';
-import SellsMeaning from '../sharedConstants/SellsMeanind';
+import SellsMeaning from './constants';
 
-export default class BoardModel {
+class BoardModel {
 
     constructor(
         {sizeOfX, sizeOfY}, //Size
@@ -167,4 +167,10 @@ export default class BoardModel {
         );
     }
 
+}
+
+export {
+    BoardModel as BoardModel,
+    Snake as SnakeModel,
+    SellsMeaning as Constants
 }

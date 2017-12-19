@@ -5,7 +5,7 @@ import MouseButtons from '../sharedConstants/MouseClickMeaning';
 import { stopImpulse } from '../actions/actions';
 import Dispatcher from '../dispatcher/dispatcher';
 import actionTypes from '../actions/actionTypes';
-import BoardModel from "../models/boardModel";
+import {BoardModel} from "../../../crossPlatformModels/boardModel";
 
 class Store extends ReduceStore {
     constructor() {

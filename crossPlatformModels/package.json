@@ -1,0 +1,16 @@
+{
+    "name": "neiro-snake-cross-platform",
+    "version": "1.0.0",
+    "description": "",
+    "main": "boardModel.js",
+    "scripts": {
+        "test": "test"
+    },
+    "author": "Dmitry",
+    "license": "MIT",
+    "dependencies": {
+        "lodash": "^4.17.4",
+        "rotate-matrix": "0.0.3",
+        "synaptic": "^1.1.4"
+    }
+}

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { dirname } from 'path';
 
 export class Snake {
     constructor(startPoint, network) {

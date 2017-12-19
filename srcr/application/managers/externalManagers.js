@@ -32,7 +32,7 @@ class Requester {
                     "Content-type": "application/json"
                 }
             }
-        ).then(() => console.log('ok'));
+        )
     }
 
     receiveNetwork(callback) {
