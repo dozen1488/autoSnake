@@ -2,8 +2,8 @@ import React from 'react';
 import './styles/spinnerVIew.css';
 
 export default function spinner() {
-    return <div class="fulfilling-bouncing-circle-spinner">
-        <div class="circle"></div>
-        <div class="orbit"></div>
+    return <div className="fulfilling-bouncing-circle-spinner">
+        <div className="circle"></div>
+        <div className="orbit"></div>
   </div>
 }

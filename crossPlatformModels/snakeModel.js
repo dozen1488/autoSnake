@@ -1,11 +1,15 @@
 import _ from 'lodash';
+import {Network} from 'synaptic';
+import generateNetwork from './generateNetwork';
 
 export class Snake {
-    constructor(startPoint, network) {
+    constructor(startPoint, networkJSON ) {
         this._direction = new Direction();
         this._tail = [];
         this._tail.push(startPoint);
-        this._network = network;
+        this._network = (networkJSON) ? 
+            Network.fromJSON(networkJSON) : 
+            generateNetwork(1);
     }
 
     get tail() {

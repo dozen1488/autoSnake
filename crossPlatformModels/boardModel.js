@@ -3,18 +3,22 @@ import {Layer, Network} from 'synaptic';
 import rotateMatrix from 'rotate-matrix';
 
 import {Snake, DIRECTIONS} from './snakeModel';
-import SellsMeaning from './constants';
+import SellsMeaning from './sellsConstants.json';
+import ErrorConstants from './errorConstants.json';
 
 class BoardModel {
 
     constructor(
-        {sizeOfX, sizeOfY}, //Size
-        {network, radiusOfVisionForNetwork} //Network settings
+        {sizeOfX = 2, sizeOfY = 2}, //Size
+        {network, radiusOfVisionForNetwork = 1} //Network settings
     ) {
+        if(sizeOfX < 2 || sizeOfY < 2) {
+            throw new Error(ErrorConstants.TOO_SMALL_BOARD);
+        }
+
         this.board = new Array(sizeOfX)
             .fill(0)
             .map(() => new Array(sizeOfY).fill(SellsMeaning.Empty));
-
         this.snake = new Snake(
             {
                 x: Math.round(sizeOfX/2), 
@@ -90,6 +94,10 @@ class BoardModel {
         };
     }
 
+    get isGameOver(){
+        return !!this._isGameOver;
+    }  
+
     _printSnakeTail() {
         this.snake.tail.forEach(
             ({x, y}, index) => {
@@ -150,6 +158,7 @@ class BoardModel {
     }
 
     _gameOver() {
+        this._isGameOver = true;
         return {
             isGameOver: true,
             images: this.path

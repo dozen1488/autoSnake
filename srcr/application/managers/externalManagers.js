@@ -1,5 +1,4 @@
 import {impulseBoard, networkReady} from '../actions/actions';
-import {Network} from 'synaptic';
 
 class Impulser {
     constructor(frequency = 1000) {
@@ -42,7 +41,7 @@ class Requester {
             (res) => {
                 res
                     .json()
-                    .then(res => callback(Network.fromJSON(res)))
+                    .then(res => callback(res))
             }
         );
     }
@@ -68,6 +67,7 @@ class KeyboardListener {
     }
 
 }
+
 const imp = new Impulser();
 const reg = new Requester();
 const key = new KeyboardListener();
