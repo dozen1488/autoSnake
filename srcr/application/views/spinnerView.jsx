@@ -1,5 +1,5 @@
 import React from 'react';
-import './spinnerVIew.css';
+import './styles/spinnerVIew.css';
 
 export default function spinner() {
     return <div class="fulfilling-bouncing-circle-spinner">

@@ -1,4 +1,4 @@
-import './boardView.css';
+import './styles/boardView.css';
 
 import Square from './squareView';
 import React from 'react';

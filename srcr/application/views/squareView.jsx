@@ -33,9 +33,9 @@ export default class Square extends React.Component {
 }
 
 const ImageStatus = {
-    [SellsMeaning.Empty]: require('./emptySquare.png'),
-    [SellsMeaning.Wall]: require('./wallSquare.png'),
-    [SellsMeaning.Food]: require('./foodSquare.png'),
-    [SellsMeaning.SnakeTail]: require('./snakeBodySquare.png'),
-    [SellsMeaning.SnakeHead]: require('./snakeHeadSquare.png')
+    [SellsMeaning.Empty]: require('./images/emptySquare.png'),
+    [SellsMeaning.Wall]: require('./images/wallSquare.png'),
+    [SellsMeaning.Food]: require('./images/foodSquare.png'),
+    [SellsMeaning.SnakeTail]: require('./images/snakeBodySquare.png'),
+    [SellsMeaning.SnakeHead]: require('./images/snakeHeadSquare.png')
 }
