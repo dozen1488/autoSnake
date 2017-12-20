@@ -1,50 +1,46 @@
 #!/usr/bin/env node
 
 const PORT = 3002;
-const IMAGES_FILE_NAME = './images.json';
+const IMAGES_FILE_NAME = "./images.json";
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-const _ = require('lodash');
+const express = require("express");
+const bodyParser = require("body-parser");
+const fs = require("fs");
+const _ = require("lodash");
 
-const neiroTrainer = require('./neiroTrainer');
+const networkTrainer = require("./networkTrainer");
 
 const app = express();
 
-const neiroArray = readImages();
+const trainingImages = readImages();
 
-app.use(express.static('./server-static'));
+app.use(express.static("./server-static"));
 app.use(bodyParser.json());
 app.listen(PORT);
 
-app.get('/getNetwork', (req, res) => {
-    const network = neiroTrainer(neiroArray);
+app.get("/getNetwork", (req, res) => {
+    const network = networkTrainer(trainingImages);
     res
         .status(200)
-        .send(
-            JSON.stringify(
-                network
-            )   
-        );
-})
+        .send(JSON.stringify(network));
+});
 
-app.post('/applyImages', (req, res) => {
-    neiroArray.push.apply(neiroArray, req.body);
+app.post("/applyImages", (req, res) => {
+    trainingImages.push.apply(trainingImages, req.body);
     res
         .status(200)
         .end();
 });
 
-console.log('Server is listening on port ' + PORT);
-console.log('PID is ' + process.pid);
+console.log("Server is listening on port " + PORT);
+console.log("PID is " + process.pid);
 
 process
-    .on('SIGINT', () => {
-        saveImages(neiroArray);
+    .on("SIGINT", () => {
+        saveImages(trainingImages);
     })
-    .on('SIGTERM', () => {
-        saveImages(neiroArray);
+    .on("SIGTERM", () => {
+        saveImages(trainingImages);
     });
 
 function readImages() {
@@ -56,6 +52,6 @@ function readImages() {
 }
 
 function saveImages(images) {
-    fs.writeFileSync(IMAGES_FILE_NAME, JSON.stringify(_.uniqWith(images, _.isEqual), null, '\t'));
+    fs.writeFileSync(IMAGES_FILE_NAME, JSON.stringify(_.uniqWith(images, _.isEqual), null, "\t"));
     process.exit(0);
 }

@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import * as actions from '../actions/actions';
-import store from '../stores/store'; 
-import render from '../views/boardView';
-import deadSnake from '../views/deadSnake'
+import * as actions from "../actions/actions";
+import store from "../stores/store";
+import render from "../views/boardView";
+import deadSnake from "../views/deadSnake";
 import spinner from "../views/spinnerView";
-import {Requester, Impulser, KeyboardListener} from '../managers/externalManagers'; 
+import { Requester, Impulser, KeyboardListener } from "../managers/externalManagers";
 
 export default class Board extends React.Component {
 
@@ -13,7 +13,7 @@ export default class Board extends React.Component {
         super(...args);
 
         actions.initStore(
-            this.props.x, 
+            this.props.x,
             this.props.y,
             this.props.radiusOfVisionForNetwork
         );
@@ -34,15 +34,16 @@ export default class Board extends React.Component {
     }
 
     componentDidUpdate(prevState) {
-        if(
+        if (
             this.state.network === STATES.RETRIEVED_NETWORK &&
             prevState.network !== STATES.RETRIEVED_NETWORK
-        ){
-        //Preventing contex menu from boards
-            [...document.getElementsByClassName('Board')]
-                .forEach( el => 
-                    el.addEventListener('contextmenu', event => { 
+        ) {
+        //  Preventing contex menu from boards
+            [...document.getElementsByClassName("Board")]
+                .forEach(el =>
+                    el.addEventListener("contextmenu", event => {
                         event.preventDefault();
+
                         return false;
                     })
                 );
@@ -53,29 +54,29 @@ export default class Board extends React.Component {
         listener.remove();
         
         KeyboardListener.startListening(actions.keyPressed);
-        let innerListener = store.addListener(
+        const innerListener = store.addListener(
             () => this.changedStateHandler(innerListener)
         );
 
         Impulser.startImpulsing(actions.impulseBoard);
 
-        this.setState({network: STATES.RETRIEVED_NETWORK});
+        this.setState({ network: STATES.RETRIEVED_NETWORK });
     }
 
     changedStateHandler(innerListener) {
         const board = store.getState();
-        if(board.isGameOver) {
+        if (board.isGameOver) {
             Impulser.stopImpulsing();
             Requester.sendImages(board.images);
             innerListener.remove();
             this.forceUpdate();
         }
-        if(board.isPaused && Impulser.isImpulsing()) {
+        if (board.isPaused && Impulser.isImpulsing()) {
             Impulser.stopImpulsing();
-        } else if(!board.isPaused && !Impulser.isImpulsing()) {
+        } else if (!board.isPaused && !Impulser.isImpulsing()) {
             Impulser.startImpulsing(actions.impulseBoard);
         }
-        board.changedSquare.forEach( ({x, y}) => {
+        board.changedSquare.forEach(({ x, y }) => {
             this.squareUpdateFunctions[x][y]({
                 status: board.board.board[x][y]
             });
@@ -84,7 +85,7 @@ export default class Board extends React.Component {
 
     render() {
         const state = store.getState();
-        if(state.isGameOver) {
+        if (state.isGameOver) {
             return deadSnake();
         } else if (this.state.network == STATES.RETRIEVED_NETWORK){
             return render(
@@ -103,4 +104,5 @@ export default class Board extends React.Component {
 const STATES = {
     "WAITING_FOR_NETWORK": 0,
     "RETRIEVED_NETWORK": 1
-}
+};
+

@@ -1,25 +1,25 @@
-import Dispatcher from '../dispatcher/dispatcher';
-import ActionTypes from './actionTypes';
+import Dispatcher from "../dispatcher/dispatcher";
+import ActionTypes from "./actionTypes";
 
-export function impulseBoard(){
+export function impulseBoard() {
     Dispatcher.dispatch({
         type: ActionTypes.impulseBoard
     });
 }
 
-export function onClick(x, y, buttonNumber){
+export function onClick(x, y, buttonNumber) {
     Dispatcher.dispatch({
         x, y, type: ActionTypes.onClick, buttonType: buttonNumber
     });
 }
 
-export function onHover(x, y){
+export function onHover(x, y) {
     Dispatcher.dispatch({
         x, y, type: ActionTypes.onHover
     });
 }
     
-export function onRelease(){
+export function onRelease() {
     Dispatcher.dispatch({
         type: ActionTypes.onRelease
     });

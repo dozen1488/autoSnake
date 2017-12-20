@@ -1,6 +1,6 @@
-const {Layer, Network} = require('synaptic');
+const { Layer, Network } = require("synaptic");
 
-function generateNetwork(n){
+function generateNetwork(n) {
     const size = (n * 2 + 1) * (n * 2 + 1);
     
     const inputLayer = new Layer(size);

@@ -12,5 +12,12 @@
         "lodash": "^4.17.4",
         "rotate-matrix": "0.0.3",
         "synaptic": "^1.1.4"
+    },
+    "devDependencies": {
+        "babel-eslint": "^7.2.3",
+        "eslint": "^3.19.0",
+        "eslint-plugin-import": "^2.8.0",
+        "eslint-plugin-jasmine": "^2.9.1",
+        "eslint-plugin-react": "^7.5.1"
     }
 }

@@ -1,15 +1,15 @@
-import _ from 'lodash';
-import {Network} from 'synaptic';
-import generateNetwork from './generateNetwork';
+import _ from "lodash";
+import { Network } from "synaptic";
+import generateNetwork from "./generateNetwork";
 
 export class Snake {
-    constructor(startPoint, networkJSON ) {
+    constructor(startPoint, networkJSON) {
         this._direction = new Direction();
         this._tail = [];
         this._tail.push(startPoint);
-        this._network = (networkJSON) ? 
-            Network.fromJSON(networkJSON) : 
-            generateNetwork(1);
+        this._network = (networkJSON)
+            ? Network.fromJSON(networkJSON)
+            : generateNetwork(1);
     }
 
     get tail() {
@@ -39,45 +39,39 @@ export class Snake {
                 break;
         }
 
-        //calculate next point of head
+        //  calculate next point of head
         const difference = this._direction.getCoordinateDiff();
         const newHead = _.clone(_.head(this._tail));
         newHead.x += difference.x;
         newHead.y += difference.y;
 
-        //push to start of array
+        //  push to start of array
         this._tail.unshift(newHead);
-
-        //remove tail if it's necessary
-        let deletedTail;
-        if (!withIncrement) {
-            deletedTail = this._tail.pop();
-        }
-
-        return (withIncrement) ? {head: newHead, turn} : {head: newHead, turn};
+        
+        return { head: newHead, turn };
     }
 
     _getTurn(image) {
         const networkAnswer = this._network.activate(image);
 
-        //Find an index of the most value in array
-        const {index: resultIndex} = networkAnswer.reduce(
-            ({index, maxValue}, currValue, currIndex) => {
-                if(currValue >= maxValue) {
+        //  Find an index of the most value in array
+        const { index: resultIndex } = networkAnswer.reduce(
+            ({ index, maxValue }, currValue, currIndex) => {
+                if (currValue >= maxValue) {
                     return {
                         index: currIndex,
                         maxValue: currValue
-                    }
+                    };
                 } else {
-                    return {index, maxValue};
+                    return { index, maxValue };
                 }
-            },{
+            }, {
                 index: -1,
                 maxValue: -Infinity
             }
         );
 
-        //Map value to turn
+        //  Map value to turn
         return resultIndex - 1;
     }
 }
@@ -97,6 +91,7 @@ class Direction {
         if (this._dir < 0) {
             this._dir = this._maxDIr;
         }
+        
         return this;
     }
 
@@ -105,6 +100,7 @@ class Direction {
         if (this._dir > this._maxDIr) {
             this._dir = 0;
         }
+
         return this;
     }
 
@@ -135,13 +131,13 @@ class Direction {
 }
 
 export const DIRECTIONS = {
-    UP:1,
-    DOWN:3,
-    LEFT:0,
-    RIGHT:2
+    UP: 1,
+    DOWN: 3,
+    LEFT: 0,
+    RIGHT: 2
 };
 
 const TURNS = {
     LEFT: -1,
     RIGHT: 1
-}
+};
