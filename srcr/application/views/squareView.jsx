@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 import SellsMeaning from "../sharedConstants/SellsMeanind";
 
@@ -14,23 +15,29 @@ export default class Square extends React.Component {
 
     render() {
         return (
-            <img src={ImageStatus[this.state.status]} 
-                draggable="false" 
+            <img src={ImageStatus[this.state.status]}
+                draggable="false"
                 onMouseOver={() => {
                     this.props.actions.onHover(this.props.x, this.props.y);
                 }}
-                onMouseDown={({button}) => {
+                onMouseDown={({ button }) => {
                     this.props.actions.onClick(this.props.x, this.props.y, button);
                 }}
                 onMouseUp={() => {
                     this.props.actions.onRelease();
                 }}
-                width="30px" 
-                height="30px"
             />
         );
     }
 }
+
+Square.propTypes = {
+    x: PropTypes.number,
+    y: PropTypes.number,
+    status: PropTypes.number,
+    actions: PropTypes.object,
+    stateUpdate: PropTypes.func
+};
 
 const ImageStatus = {
     [SellsMeaning.Empty]: require("./images/emptySquare.png"),

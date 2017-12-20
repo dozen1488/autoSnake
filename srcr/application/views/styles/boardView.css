@@ -31,3 +31,8 @@
     -webkit-user-select: none;
     -ms-user-select: none;
 }
+
+.Square > img {
+    width: 30px;
+    height: 30px;
+}
