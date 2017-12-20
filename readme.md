@@ -1,8 +1,8 @@
 Launch server: (from 'server' folder):  
--npm i   
--npm run start  
+- npm i   
+- npm run start  
 Install cross-platform modules: (from 'crossPlatformModels'):  
--npm i
+- npm i  
 Launch Ui building: (from 'srcr' folder):  
--npm run watch  
+- npm run watch  
 Watch app on 'localhost:3002'  
