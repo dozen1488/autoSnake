@@ -48,6 +48,10 @@ export class Snake {
         //  push to start of array
         this._tail.unshift(newHead);
         
+        if (!withIncrement) {
+            this._tail.pop();
+        }
+
         return { head: newHead, turn };
     }
 

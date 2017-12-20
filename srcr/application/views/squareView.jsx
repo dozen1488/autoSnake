@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import SellsMeaning from '../sharedConstants/SellsMeanind';
+import SellsMeaning from "../sharedConstants/SellsMeanind";
 
 export default class Square extends React.Component {
     
@@ -15,7 +15,7 @@ export default class Square extends React.Component {
     render() {
         return (
             <img src={ImageStatus[this.state.status]} 
-                draggable='false' 
+                draggable="false" 
                 onMouseOver={() => {
                     this.props.actions.onHover(this.props.x, this.props.y);
                 }}
@@ -25,17 +25,17 @@ export default class Square extends React.Component {
                 onMouseUp={() => {
                     this.props.actions.onRelease();
                 }}
-                width='30px' 
-                height='30px'
+                width="30px" 
+                height="30px"
             />
         );
     }
 }
 
 const ImageStatus = {
-    [SellsMeaning.Empty]: require('./images/emptySquare.png'),
-    [SellsMeaning.Wall]: require('./images/wallSquare.png'),
-    [SellsMeaning.Food]: require('./images/foodSquare.png'),
-    [SellsMeaning.SnakeTail]: require('./images/snakeBodySquare.png'),
-    [SellsMeaning.SnakeHead]: require('./images/snakeHeadSquare.png')
-}
+    [SellsMeaning.Empty]: require("./images/emptySquare.png"),
+    [SellsMeaning.Wall]: require("./images/wallSquare.png"),
+    [SellsMeaning.Food]: require("./images/foodSquare.png"),
+    [SellsMeaning.SnakeTail]: require("./images/snakeBodySquare.png"),
+    [SellsMeaning.SnakeHead]: require("./images/snakeHeadSquare.png")
+};

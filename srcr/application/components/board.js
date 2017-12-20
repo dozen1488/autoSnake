@@ -6,6 +6,7 @@ import render from "../views/boardView";
 import deadSnake from "../views/deadSnake";
 import spinner from "../views/spinnerView";
 import { Requester, Impulser, KeyboardListener } from "../managers/externalManagers";
+import PropTypes from "prop-types";
 
 export default class Board extends React.Component {
 
@@ -38,7 +39,7 @@ export default class Board extends React.Component {
             this.state.network === STATES.RETRIEVED_NETWORK &&
             prevState.network !== STATES.RETRIEVED_NETWORK
         ) {
-        //  Preventing contex menu from boards
+        //  Preventing context menu from boards
             [...document.getElementsByClassName("Board")]
                 .forEach(el =>
                     el.addEventListener("contextmenu", event => {
@@ -100,6 +101,12 @@ export default class Board extends React.Component {
         }
     }
 }
+
+Board.propTypes = {
+    x: PropTypes.number,
+    y: PropTypes.number,
+    radiusOfVisionForNetwork: PropTypes.number
+};
 
 const STATES = {
     "WAITING_FOR_NETWORK": 0,

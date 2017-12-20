@@ -1,4 +1,7 @@
-import {impulseBoard, networkReady} from '../actions/actions';
+const URLS = {
+    APPLY_IMAGES: "/applyImages",
+    GET_NETWORK: "/getNetwork"
+};
 
 class Impulser {
     constructor(frequency = 1000) {
@@ -23,25 +26,25 @@ class Requester {
 
     sendImages(images) {
         return fetch(
-            '/applyImages', 
+            URLS.APPLY_IMAGES,
             {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify(images),
                 headers: {
                     "Content-type": "application/json"
                 }
             }
-        )
+        );
     }
 
     receiveNetwork(callback) {
         return fetch(
-            '/getNetwork',
+            URLS.GET_NETWORK,
         ).then(
             (res) => {
                 res
                     .json()
-                    .then(res => callback(res))
+                    .then(res => callback(res));
             }
         );
     }
@@ -55,11 +58,12 @@ class KeyboardListener {
     }
 
     startListening(callback) {
-        this._listener = document.addEventListener('keydown', (event) => {
-            if(event.code === this._code) {
-                callback(event.code);
-            }
-        }, true);
+        this._listener = document
+            .addEventListener("keydown", (event) => {
+                if (event.code === this._code) {
+                    callback(event.code);
+                }
+            }, true);
     }
 
     stopListening() {

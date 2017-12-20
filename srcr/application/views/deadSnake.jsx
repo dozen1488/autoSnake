@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
 export default function deadSnake() {
     return (
-    <p className="ReadmeHeader">
-        Snake has died. Refresh page please
-    </p>
-    )
+        <p className="ReadmeHeader">
+            Snake has died. Refresh page please
+        </p>
+    );
 }
