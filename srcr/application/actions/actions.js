@@ -37,19 +37,13 @@ export function initStore(x, y, radiusOfVisionForNetwork) {
     });
 }
 
-export function stopImpulse() {
-    Dispatcher.dispatch({
-        type: ActionTypes.stopImpulse,
-    });
-}
-
 export function networkReady(network) {
     Dispatcher.dispatch({
         type: ActionTypes.networkReady, network
     });
 }
 
-export function keyPressed(key) {
+export function spacePressed(key) {
     Dispatcher.dispatch({
         type: ActionTypes.keyPressed, key
     });
