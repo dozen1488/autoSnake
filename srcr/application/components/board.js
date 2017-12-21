@@ -54,12 +54,12 @@ export default class Board extends React.Component {
     networkReadyHandler(listener) {
         listener.remove();
         
-        KeyboardListener.startListening(actions.keyPressed);
+        KeyboardListener.startListening(actions.spacePressed);
         const innerListener = store.addListener(
             () => this.changedStateHandler(innerListener)
         );
 
-        Impulser.startImpulsing(actions.impulseBoard);
+        Impulser.startImpulsing(actions.changeBoard);
 
         this.setState({ network: STATES.RETRIEVED_NETWORK });
     }
@@ -75,7 +75,7 @@ export default class Board extends React.Component {
         if (board.isPaused && Impulser.isImpulsing()) {
             Impulser.stopImpulsing();
         } else if (!board.isPaused && !Impulser.isImpulsing()) {
-            Impulser.startImpulsing(actions.impulseBoard);
+            Impulser.startImpulsing(actions.changeBoard);
         }
         board.changedSquare.forEach(({ x, y }) => {
             this.squareUpdateFunctions[x][y]({
@@ -88,7 +88,7 @@ export default class Board extends React.Component {
         const state = store.getState();
         if (state.isGameOver) {
             return deadSnake();
-        } else if (this.state.network == STATES.RETRIEVED_NETWORK){
+        } else if (this.state.network == STATES.RETRIEVED_NETWORK) {
             return render(
                 this.props.x,
                 this.props.y,

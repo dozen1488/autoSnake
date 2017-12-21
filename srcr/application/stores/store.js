@@ -59,7 +59,7 @@ class Store extends ReduceStore {
                 }
             },
 
-            impulseBoard: () => {
+            changeBoard: () => {
                 const { isGameOver, changedSquares, images } = state.board.updateState();
                 if (!isGameOver) {
                     state.changedSquare = changedSquares;
@@ -78,7 +78,7 @@ class Store extends ReduceStore {
                 }, _.cloneDeep(defaultStore));
             },
 
-            keyPressed: () => {
+            spacePressed: () => {
                 if (action.key === "Space") {
                     state.isPaused = !state.isPaused;
                 }
