@@ -1,9 +1,15 @@
 import Dispatcher from "../dispatcher/dispatcher";
 import ActionTypes from "./actionTypes";
 
-export function impulseBoard() {
+export function changeBoard(changedSquares) {
     Dispatcher.dispatch({
-        type: ActionTypes.impulseBoard
+        type: ActionTypes.changeBoard, changedSquares
+    });
+}
+
+export function gameOver(images) {
+    Dispatcher.dispatch({
+        type: ActionTypes.gameOver, images
     });
 }
 

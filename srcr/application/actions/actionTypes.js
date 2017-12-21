@@ -1,12 +1,15 @@
 import keymirror from "keymirror";
 
 export default keymirror({
-    "impulseBoard": null,
+    "initStore": null,
+    "networkReady": null,
+
+    "changeBoard": null,
+    "gameOver": null,
     "stopImpulse": null,
+    
     "onClick": null,
     "onHover": null,
     "onRelease": null,
-    "initStore": null,
-    "networkReady": null,
-    "keyPressed": null
+    "spacePressed": null
 });
