@@ -27,7 +27,7 @@ class Store extends ReduceStore {
                             radiusOfVisionForNetwork: state.radiusOfVisionForNetwork
                         }
                     )
-                }, _.cloneDeep(dafaultStore));
+                }, _.cloneDeep(defaultStore));
                 this.__emitChange();
             },
 
@@ -41,7 +41,7 @@ class Store extends ReduceStore {
                     state.changedSquare = [
                         state.board.appendWall(action.x, action.y)
                     ];
-                } else if (action.buttonType === MouseButtons.rightButton){
+                } else if (action.buttonType === MouseButtons.rightButton) {
                     state.isMouseFoodClicked = true;
                     state.changedSquare = [
                         state.board.appendFood(action.x, action.y)
@@ -75,7 +75,7 @@ class Store extends ReduceStore {
                     x: action.x,
                     y: action.y,
                     radiusOfVisionForNetwork: action.radiusOfVisionForNetwork
-                }, _.cloneDeep(dafaultStore));
+                }, _.cloneDeep(defaultStore));
             },
 
             keyPressed: () => {
@@ -94,7 +94,7 @@ class Store extends ReduceStore {
     }
 }
 
-const dafaultStore = {
+const defaultStore = {
     isMouseClicked: false,
     isMouseFoodClicked: false,
     isGameOver: false,
