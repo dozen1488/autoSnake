@@ -1,24 +1,37 @@
+import _ from "lodash";
+
 const URLS = {
     APPLY_IMAGES: "/applyImages",
     GET_NETWORK: "/getNetwork"
 };
 
 class Impulser {
-    constructor(frequency = 1000) {
-        this.frequency = frequency;
-    }
 
-    isImpulsing() {
-        return !!this.timer;
+    constructor() {
+        this._timers = [];
     }
     
-    startImpulsing(action) {
-        this.timer = setInterval(action, this.frequency);
+    isImpulsing() {
+        return (this._timers.length > 0);
+    }
+    
+    startImpulsing(action, frequency = 1000) {
+        const timer = setInterval(action, frequency);
+        this._timers.push(timer);
+         
+        return timer;
     }
 
-    stopImpulsing() {
-        clearInterval(this.timer);
-        this.timer = null;
+    stopImpulsing(timer) {
+        const foundTimer = this._timers.find(t => t === timer);
+        if (foundTimer) {
+            clearInterval(foundTimer);
+            _.remove(this._timers, t => t === foundTimer);
+            
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

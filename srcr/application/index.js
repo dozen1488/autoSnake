@@ -5,9 +5,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import BoardComponent from "./components/board";
+import { x, y, radiusOfVisionForNetwork } from "./sharedConstants/configuration.json";
 
 ReactDOM.render(<BoardComponent
-    x={20}
-    y={20}
-    radiusOfVisionForNetwork={1}
+    x={x}
+    y={y}
+    radiusOfVisionForNetwork={radiusOfVisionForNetwork}
 />, document.getElementById("Application"));
