@@ -1,16 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import _ from "lodash";
-import { is } from "immutable";
 
 import SellsMeaning from "../sharedConstants/SellsMeanind";
 
-export default class Square extends React.Component {
-
-    shouldComponentUpdate(nextProps) {
-        return !is(this.props, nextProps);
-    }
-
+export default class Square extends React.PureComponent {
     render() {
         return (
             <img src={ImageStatus[this.props.status]}
