@@ -5,6 +5,8 @@ import Store from "../stores/store";
 import Dispatcher from "../dispatcher/dispatcher";
 import { Requester } from "../managers/externalManagers";
 
+let gameManager;
+
 export function changeBoard(changedSquares) {
     Dispatcher.dispatch({
         type: ActionTypes.changeBoard, changedSquares

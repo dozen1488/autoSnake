@@ -6,7 +6,7 @@ import { Impulser } from "./externalManagers";
 class GameManager {
     /**
      * creating GameManager
-     * @param {Function} impulseCallback - callback for impulsing 
+     * @param {Function} impulseCallback - callback for impulsing
      * @param {Function} gameOverCallback - callback for gameOver
      * @param {Number} refresh frequency
      * @param {Object} dimensions - object with x,y numbers which are dimensions
