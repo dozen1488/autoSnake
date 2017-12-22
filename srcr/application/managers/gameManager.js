@@ -41,11 +41,11 @@ class GameManager {
 
     _impulseBoard() {
         let { isGameOver, changedSquares, images } = this._boardModel.updateState();
-        changedSquares = changedSquares
-            .map(({ x, y }) => ({ x, y, state: this._boardModel.board[x][y] }));
         if (isGameOver) {
             this._gameOverCallback(images);
         } else {
+            changedSquares = changedSquares
+                .map(({ x, y }) => ({ x, y, state: this._boardModel.board[x][y] }));
             this._impulseCallback(changedSquares);
         }
     }
@@ -61,7 +61,7 @@ class GameManager {
         return {
             ...this._boardModel.appendFood(x, y),
             state: this._boardModel.board[x][y]
-        }; 
+        };
     }
 
     resumeImpulsing() {

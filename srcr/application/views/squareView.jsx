@@ -1,23 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
+import { is } from "immutable";
 
 import SellsMeaning from "../sharedConstants/SellsMeanind";
 
-export default function Square(props) {
-    return (
-        <img src={ImageStatus[props.status]}
-            draggable="false"
-            onMouseOver={() => {
-                props.actions.onHover(props.x, props.y);
-            }}
-            onMouseDown={({ button }) => {
-                props.actions.onClick(props.x, props.y, button);
-            }}
-            onMouseUp={() => {
-                props.actions.onRelease();
-            }}
-        />
-    );
+export default class Square extends React.Component {
+
+    shouldComponentUpdate(nextProps) {
+        return !is(this.props, nextProps);
+    }
+
+    render() {
+        return (
+            <img src={ImageStatus[this.props.status]}
+                draggable="false"
+                onMouseOver={() => {
+                    this.props.actions.onHover(this.props.x, this.props.y);
+                }}
+                onMouseDown={({ button }) => {
+                    this.props.actions.onClick(this.props.x, this.props.y, button);
+                }}
+                onMouseUp={() => {
+                    this.props.actions.onRelease();
+                }}
+            />
+        );
+    }
 }
 
 Square.propTypes = {
