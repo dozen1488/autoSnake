@@ -26,8 +26,8 @@ class GameManager {
         if (!impulseCallback ||
             !gameOverCallback ||
             isNaN(impulseFrequency) ||
-            !_.has(dimensions, ["x", "y"]) ||
-            !_.has(networkSettings, ["network", "radiusOfVisionForNetwork"])
+            !_.has(dimensions, "sizeOfX", "sizeOfY") ||
+            !_.has(networkSettings, "network", "radiusOfVisionForNetwork")
         ) {
             throw new Error("no requested property for creation GameManager");
         }
@@ -36,16 +36,16 @@ class GameManager {
         this._impulseCallback = impulseCallback;
         this._gameOverCallback = gameOverCallback;
         
-        Impulser.startImpulsing(() => this.impulseBoard());
+        this._impulsingFunc = Impulser.startImpulsing(() => this._impulseBoard());
     }
 
-    impulseBoard() {
-        const { isGameOver, changedSquares, images } = this.board.updateState();
+    _impulseBoard() {
+        const { isGameOver, changedSquares, images } = this._boardModel.updateState();
 
         if (isGameOver) {
-            this.gameOverCallback(images);
+            this._gameOverCallback(images);
         } else {
-            this.impulseCallback(changedSquares);
+            this._impulseCallback(changedSquares);
         }
     }
 
@@ -55,6 +55,18 @@ class GameManager {
 
     appendFood(x, y) {
         return this._boardModel.appendFood(x, y);
+    }
+
+    resumeImpulsing() {
+        if (this._impulsingFunc) {
+            this.pauseImpulsing();
+        }
+        this._impulsingFunc = Impulser.startImpulsing(() => this._impulseBoard());
+    }
+
+    pauseImpulsing() {
+        Impulser.stopImpulsing(this._impulsingFunc);
+        this._impulsingFunc = null;
     }
 }
 

@@ -23,6 +23,12 @@ class Impulser {
     }
 
     stopImpulsing(timer) {
+        if (!timer) {
+            this._timers.forEach(t => clearInterval(t));
+            this._timers = [];
+            
+            return true;
+        }
         const foundTimer = this._timers.find(t => t === timer);
         if (foundTimer) {
             clearInterval(foundTimer);
@@ -66,14 +72,15 @@ class Requester {
 
 class KeyboardListener {
     constructor(code = "Space") {
-        this._code = code;
+        this._codes = [];
+        this._codes.push(code);
         this._listener = null;
     }
 
     startListening(callback) {
         this._listener = document
             .addEventListener("keydown", (event) => {
-                if (event.code === this._code) {
+                if (_.includes(this._codes, event.code)) {
                     callback(event.code);
                 }
             }, true);
