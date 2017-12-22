@@ -65,14 +65,14 @@ export default class Board extends React.Component {
     }
 
     render() {
-        const state = store.getState().toJS();
-        if (state.isGameOver) {
+        const state = store.getState();
+        if (state.get("isGameOver")) {
             return deadSnake();
-        } else if (state.networkReady == STATES.RETRIEVED_NETWORK) {
+        } else if (state.get("networkReady") == STATES.RETRIEVED_NETWORK) {
             return render(
                 this.props.x,
                 this.props.y,
-                state.board,
+                state.get("board"),
                 actions
             );
         } else {

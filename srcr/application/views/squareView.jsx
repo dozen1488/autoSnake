@@ -3,24 +3,21 @@ import PropTypes from "prop-types";
 
 import SellsMeaning from "../sharedConstants/SellsMeanind";
 
-export default class Square extends React.Component {
-    
-    render() {
-        return (
-            <img src={ImageStatus[this.props.status]}
-                draggable="false"
-                onMouseOver={() => {
-                    this.props.actions.onHover(this.props.x, this.props.y);
-                }}
-                onMouseDown={({ button }) => {
-                    this.props.actions.onClick(this.props.x, this.props.y, button);
-                }}
-                onMouseUp={() => {
-                    this.props.actions.onRelease();
-                }}
-            />
-        );
-    }
+export default function Square(props) {
+    return (
+        <img src={ImageStatus[props.status]}
+            draggable="false"
+            onMouseOver={() => {
+                props.actions.onHover(props.x, props.y);
+            }}
+            onMouseDown={({ button }) => {
+                props.actions.onClick(props.x, props.y, button);
+            }}
+            onMouseUp={() => {
+                props.actions.onRelease();
+            }}
+        />
+    );
 }
 
 Square.propTypes = {
