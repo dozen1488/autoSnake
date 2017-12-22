@@ -4,6 +4,8 @@ import MouseCLicks from "../sharedConstants/MouseClickMeaning.json";
 import Store from "../stores/store";
 import Dispatcher from "../dispatcher/dispatcher";
 import { Requester } from "../managers/externalManagers";
+import { impulseFrequency } from "../sharedConstants/configuration.json";
+import GameManager from "../managers/gameManager";
 
 let gameManager;
 
@@ -15,7 +17,6 @@ export function changeBoard(changedSquares) {
 
 export function gameOver(images) {
 
-    const { gameManager } = Store.getState();
     gameManager.pauseImpulsing();
 
     Dispatcher.dispatch({
@@ -27,7 +28,6 @@ export function gameOver(images) {
 
 export function onClick(x, y, buttonNumber) {
     let changedSquares;
-    const gameManager = Store.getState().gameManager;
 
     if (buttonNumber === MouseCLicks.leftButton) {
         changedSquares = [gameManager.appendWall(x, y)];
@@ -47,9 +47,8 @@ export function onHover(x, y) {
     let changedSquares = [];
     const {
         isMouseWallClicked,
-        isMouseFoodClicked,
-        gameManager
-    } = Store.getState();
+        isMouseFoodClicked
+    } = Store.getState().toJS();
     
     if (isMouseWallClicked) {
         changedSquares = [gameManager.appendWall(x, y)];
@@ -75,15 +74,33 @@ export function initStore(x, y, radiusOfVisionForNetwork) {
 }
 
 export function networkReady(network) {
+
+    const { x, y, radiusOfVisionForNetwork } = Store.getState().toJS();
+
+    gameManager = new GameManager(
+        changeBoard,
+        gameOver,
+        impulseFrequency,
+        {
+            sizeOfX: x,
+            sizeOfY: y,
+        }, {
+            network: network,
+            radiusOfVisionForNetwork: radiusOfVisionForNetwork
+        }
+    );
+
+    const board = gameManager._boardModel.board;
+
     Dispatcher.dispatch({
-        type: ActionTypes.networkReady, network
+        type: ActionTypes.networkReady, board
     });
 }
 
 export function keyPressed(key) {
     if (key === "Space") {
 
-        const { isPaused, gameManager } = Store.getState();
+        const { isPaused } = Store.getState().toJS();
         if (isPaused) {
             gameManager.resumeImpulsing();
         } else {

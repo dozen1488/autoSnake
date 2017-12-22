@@ -5,17 +5,9 @@ import SellsMeaning from "../sharedConstants/SellsMeanind";
 
 export default class Square extends React.Component {
     
-    constructor(...args) {
-        super(...args);
-        this.state = {
-            status: this.props.status
-        };
-        this.props.stateUpdate(this.setState.bind(this));
-    }
-
     render() {
         return (
-            <img src={ImageStatus[this.state.status]}
+            <img src={ImageStatus[this.props.status]}
                 draggable="false"
                 onMouseOver={() => {
                     this.props.actions.onHover(this.props.x, this.props.y);

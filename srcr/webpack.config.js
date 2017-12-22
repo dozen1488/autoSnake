@@ -25,7 +25,7 @@ module.exports = {
                 exclude: /node_modules/,
                 options: {
                     presets: [
-                        "react", "es2017"
+                        "react", "es2017", "stage-2"
                     ]
                 }
             },

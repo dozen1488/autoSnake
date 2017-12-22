@@ -33,7 +33,7 @@ export default class Board extends React.Component {
     }
 
     componentDidUpdate() {
-        if (store.getState().networkReady === STATES.RETRIEVED_NETWORK) {
+        if (store.getState().toJS().networkReady === STATES.RETRIEVED_NETWORK) {
         //  Preventing context menu from boards
             [...document.getElementsByClassName("Board")]
                 .forEach(el =>
@@ -57,29 +57,22 @@ export default class Board extends React.Component {
     }
 
     changedStateHandler(innerListener) {
-        const board = store.getState();
-        if (!board.isGameOver) {
-            board.changedSquares.forEach(({ x, y }) => {
-                this.squareUpdateFunctions[x][y]({
-                    status: board.gameManager._boardModel.board[x][y]
-                });
-            });
-        } else {
+        const state = store.getState().toJS();
+        if (state.isGameOver) {
             innerListener.remove();
-            this.forceUpdate();
         }
+        this.forceUpdate();
     }
 
     render() {
-        const state = store.getState();
+        const state = store.getState().toJS();
         if (state.isGameOver) {
             return deadSnake();
         } else if (state.networkReady == STATES.RETRIEVED_NETWORK) {
             return render(
                 this.props.x,
                 this.props.y,
-                state.gameManager._boardModel.board,
-                this.squareUpdateFunctions,
+                state.board,
                 actions
             );
         } else {

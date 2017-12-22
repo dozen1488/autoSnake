@@ -1,11 +1,9 @@
 import { ReduceStore } from "flux/utils";
 import _ from "lodash";
+import { fromJS } from "immutable";
 
 import MouseButtons from "../sharedConstants/MouseClickMeaning";
 import Dispatcher from "../dispatcher/dispatcher";
-import GameManager from "../managers/gameManager";
-import * as actions from "../actions/actions";
-import { impulseFrequency } from "../sharedConstants/configuration.json";
 
 class Store extends ReduceStore {
     constructor() {
@@ -18,73 +16,93 @@ class Store extends ReduceStore {
 
     reduce(state, action) {
         const actionMap = {
-            initStore: () => {
+            initStore: (state, action) => {
                 state = _.merge({
                     x: action.x,
                     y: action.y,
                     radiusOfVisionForNetwork: action.radiusOfVisionForNetwork
                 }, _.cloneDeep(defaultStore));
+                
+                return fromJS(state);
             },
-            networkReady: () => {
+            networkReady: (state, action) => {
                 state = _.merge({
-
-                    gameManager: new GameManager(
-                        actions.changeBoard,
-                        actions.gameOver,
-                        impulseFrequency,
-                        {
-                            sizeOfX: state.x,
-                            sizeOfY: state.y,
-                        }, {
-                            network: action.network,
-                            radiusOfVisionForNetwork: state.radiusOfVisionForNetwork
-                        }
-                    )
+                    board: action.board
                 }, _.cloneDeep(defaultStore));
                 state.networkReady = true;
                 this.__emitChange();
+
+                return fromJS(state);
             },
 
-            onRelease: () => {
-                state.isMouseWallClicked = false;
-                state.isMouseFoodClicked = false;
-
-                return state;
+            onRelease: (state) => {
+                let newState = state
+                    .set("isMouseWallClicked", false)
+                    .set("isMouseFoodClicked", false);
+                
+                return newState;
             },
-            onClick: () => {
+            onClick: (state, action) => {
                 if (action.buttonType === MouseButtons.leftButton) {
-                    state.isMouseWallClicked = true;
+                    state = state.set("isMouseWallClicked", true);
                 } else if (action.buttonType === MouseButtons.rightButton) {
-                    state.isMouseFoodClicked = true;
+                    state = state.set("isMouseFoodClicked", true);
                 }
-                state.changedSquares = action.changedSquares;
 
-                this.__emitChange();
+                let board = state.get("board");
+                board = updateBoardWIthSquares(board, action.changedSquares);
+
+                return state.set("board", board);
             },
-            onHover: () => {
-                state.changedSquares = action.changedSquares;
-                this.__emitChange();
+            onHover: (state, action) => {
+                let board = state.get("board");
+                
+                board = updateBoardWIthSquares(board, action.changedSquares);
+
+                return state
+                    .set("board", board);
+                
             },
-            changeBoard: () => {
-                state.changedSquares = action.changedSquares;
-                this.__emitChange();
+            changeBoard: (state, action) => {
+                let board = state.get("board");
+
+                board = updateBoardWIthSquares(board, action.changedSquares);
+
+                return state
+                    .set("board", board);
+                
             },
-            spacePressed: () => {
-                state.isPaused = !state.isPaused;
+            spacePressed: (state) => {
+
+                return state
+                    .set("isPaused", !state.get("isPaused"));
             },
 
-            gameOver: () => {
+            gameOver: (state) => {
                 state.isGameOver = true;
                 this.__emitChange();
+
+                return state;
             }
         };
         
         if (actionMap[action.type]) {
-            actionMap[action.type]();
+            return actionMap[action.type](state, action);
         }
 
         return state;
     }
+}
+
+function updateBoardWIthSquares(immutableBoard, changedSquares) {
+
+    changedSquares.forEach(({ x, y, state: squareState }) => {
+        let subList = immutableBoard.get(x);
+        subList = subList.set(y, squareState);
+        immutableBoard = immutableBoard.set(x, subList);
+    });
+
+    return immutableBoard;
 }
 
 const defaultStore = {
@@ -93,7 +111,7 @@ const defaultStore = {
     isGameOver: false,
     isPaused: false,
     networkReady: false,
-    changedSquare: []
+    changedSquares: []
 };
 
 export default new Store();
