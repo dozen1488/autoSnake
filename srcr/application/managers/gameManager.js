@@ -4,6 +4,7 @@ import { BoardModel } from "../../../crossPlatformModels/boardModel";
 import { Impulser } from "./externalManagers";
 
 class GameManager {
+
     /**
      * creating GameManager
      * @param {Function} impulseCallback - callback for impulsing
@@ -13,7 +14,8 @@ class GameManager {
      * @param {Object} networkSettings - object with neural network in json and
      * radiusOfVisionForNetwork as number
      * @returns {Object} GameManager
-    */
+    **/
+
     constructor(
         impulseCallback,
         gameOverCallback,

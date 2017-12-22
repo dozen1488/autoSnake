@@ -30,18 +30,14 @@ class Store extends ReduceStore {
                     board: action.board
                 }, _.cloneDeep(defaultStore));
                 state.networkReady = true;
-                this.__emitChange();
 
                 return fromJS(state);
             },
 
-            onRelease: (state) => {
-                let newState = state
+            onRelease: (state) => state
                     .set("isMouseWallClicked", false)
-                    .set("isMouseFoodClicked", false);
-                
-                return newState;
-            },
+                    .set("isMouseFoodClicked", false),
+
             onClick: (state, action) => {
                 if (action.buttonType === MouseButtons.leftButton) {
                     state = state.set("isMouseWallClicked", true);
@@ -72,18 +68,11 @@ class Store extends ReduceStore {
                     .set("board", board);
                 
             },
-            spacePressed: (state) => {
+            spacePressed: (state) => state
+                    .set("isPaused", !state.get("isPaused")),
 
-                return state
-                    .set("isPaused", !state.get("isPaused"));
-            },
-
-            gameOver: (state) => {
-                state.isGameOver = true;
-                this.__emitChange();
-
-                return state;
-            }
+            gameOver: (state) => state
+                    .set("isGameOver", true)
         };
         
         if (actionMap[action.type]) {
