@@ -53,6 +53,7 @@ export default class Board extends React.Component {
         const innerListener = store.addListener(
             () => this.changedStateHandler(innerListener)
         );
+        this.forceUpdate();
     }
 
     changedStateHandler(innerListener) {
