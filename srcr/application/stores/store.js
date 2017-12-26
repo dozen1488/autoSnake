@@ -99,8 +99,7 @@ const defaultStore = {
     isMouseFoodClicked: false,
     isGameOver: false,
     isPaused: false,
-    networkReady: false,
-    changedSquares: []
+    networkReady: false
 };
 
 export default new Store();
