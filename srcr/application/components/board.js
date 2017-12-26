@@ -23,10 +23,6 @@ export default class Board extends React.Component {
         
         Requester.receiveNetwork(actions.networkReady);
 
-        this.squareUpdateFunctions = new Array(this.props.x)
-            .fill(null, 0)
-            .map(() => new Array(this.props.y));
-
         let listener = store.addListener(
             () => this.networkReadyHandler(listener)
         );
@@ -57,8 +53,8 @@ export default class Board extends React.Component {
     }
 
     changedStateHandler(innerListener) {
-        const state = store.getState().toJS();
-        if (state.isGameOver) {
+        const isGameOver = store.getState().get("isGameOver");
+        if (isGameOver) {
             innerListener.remove();
         }
         this.forceUpdate();
