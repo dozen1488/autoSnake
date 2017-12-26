@@ -25,7 +25,7 @@ function renderTable(rows, columns, board, actions) {
     );
 }
 
-export default function render(rows, columns, board, squareUpdateFunctions, actions) {
+export default function render(rows, columns, board, actions) {
     return (
         <div id="rootContainer">
             <div className="Container">
@@ -46,7 +46,7 @@ export default function render(rows, columns, board, squareUpdateFunctions, acti
             <div className="Container">
                 <table className="Board">
                     <tbody>
-                        {renderTable(rows, columns, board, squareUpdateFunctions, actions)}
+                        {renderTable(rows, columns, board, actions)}
                     </tbody>
                 </table>
             </div>
