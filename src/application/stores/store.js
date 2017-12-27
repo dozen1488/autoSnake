@@ -22,7 +22,7 @@ class Store extends ReduceStore {
                     y: action.y,
                     radiusOfVisionForNetwork: action.radiusOfVisionForNetwork
                 }, _.cloneDeep(defaultStore));
-                
+
                 return fromJS(state);
             },
             networkReady: (state, action) => {
@@ -45,42 +45,32 @@ class Store extends ReduceStore {
                     state = state.set("isMouseFoodClicked", true);
                 }
 
-                let board = state.get("board");
-                board = updateBoardWIthSquares(board, action.changedSquares);
-
-                return state.set("board", board);
+                return processBoardChange(state, action);
             },
-            onHover: (state, action) => {
-                let board = state.get("board");
-                
-                board = updateBoardWIthSquares(board, action.changedSquares);
-
-                return state
-                    .set("board", board);
-                
-            },
-            changeBoard: (state, action) => {
-                let board = state.get("board");
-
-                board = updateBoardWIthSquares(board, action.changedSquares);
-
-                return state
-                    .set("board", board);
-                
-            },
+            onHover: processBoardChange,
+            changeBoard: processBoardChange,
             spacePressed: (state) => state
                     .set("isPaused", !state.get("isPaused")),
 
             gameOver: (state) => state
                     .set("isGameOver", true)
         };
-        
+
         if (actionMap[action.type]) {
             return actionMap[action.type](state, action);
         }
 
         return state;
     }
+}
+
+function processBoardChange(state, action) {
+    let board = state.get("board");
+    
+    board = updateBoardWIthSquares(board, action.changedSquares);
+
+    return state
+        .set("board", board);
 }
 
 function updateBoardWIthSquares(immutableBoard, changedSquares) {

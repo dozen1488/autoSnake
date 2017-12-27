@@ -1,9 +1,9 @@
-#rootContainer {
+#root-container {
     width: 80%;
     margin: auto;
 }
 
-.Container {
+.container {
     border: 4px #2e303f solid;
     border-radius: 2%; 
     padding: 2.5%;
@@ -11,18 +11,18 @@
     margin: auto;
 }
 
-.ReadmeHeader {
+.readme-header {
     text-align: center;
     margin: 0;
     color: cornsilk;
 }
 
-.Board {
+.board {
     border-collapse: collapse;
     margin: auto;
 }
 
-.Square {
+.square {
     padding: 0;
     user-drag: none; 
     user-select: none;
@@ -32,7 +32,7 @@
     -ms-user-select: none;
 }
 
-.Square > img {
+.square > img {
     width: 30px;
     height: 30px;
 }

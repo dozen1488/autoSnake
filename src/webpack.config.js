@@ -1,9 +1,9 @@
+/* eslint-env node */
+
 const _ = require("lodash");
 const path = require("path");
-const webpack = require("webpack");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin")
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
     context: __dirname + "/application",
@@ -47,9 +47,9 @@ module.exports = {
             {
                 test: /\.(html)$/,
                 use: {
-                    loader: 'html-loader',
+                    loader: "html-loader",
                     options: {
-                        attrs: [':data-src']
+                        attrs: [":data-src"]
                     }
                 }
             },
@@ -64,8 +64,8 @@ module.exports = {
         new HtmlWebpackPlugin(
             {
                 inject: false,
-                template: './index.html',
-                filename: 'index.html'
+                template: "./index.html",
+                filename: "index.html"
             }
         )
     ]
@@ -81,12 +81,12 @@ if (process.env.NODE_ENV == "development") {
             },
             devtool: "source-map"
         }
-    )
+    );
 }
 
 if (process.env.NODE_ENV == "production") {
     module.exports.plugins = module.exports.plugins || [];
     module.exports.plugins.push(
         new UglifyJsPlugin()
-    )
+    );
 }

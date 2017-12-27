@@ -2,7 +2,7 @@ import _ from "lodash";
 import rotateMatrix from "rotate-matrix";
 
 import { Snake, DIRECTIONS } from "./snakeModel";
-import SellsMeaning from "./sellsConstants.json";
+import CellTypes from "./CellTypes.json";
 import ErrorConstants from "./errorConstants.json";
 
 class BoardModel {
@@ -17,7 +17,7 @@ class BoardModel {
 
         this.board = new Array(sizeOfX)
             .fill(0)
-            .map(() => new Array(sizeOfY).fill(SellsMeaning.Empty));
+            .map(() => new Array(sizeOfY).fill(CellTypes.Empty));
         this.snake = new Snake(
             {
                 x: Math.round(sizeOfX / 2),
@@ -29,8 +29,8 @@ class BoardModel {
         this.snake.tail.forEach(
             ({ x, y }, index) => {
                 (this.board[x])[y] = (index === 0)
-                ? SellsMeaning.SnakeHead
-                : SellsMeaning.SnakeTail;
+                ? CellTypes.SnakeHead
+                : CellTypes.SnakeTail;
             }
         );
         this.radiusOfVisionForNetwork = radiusOfVisionForNetwork;
@@ -38,13 +38,13 @@ class BoardModel {
         this.didSnakeEatLustTurn = false;
     }
     appendWall(x, y) {
-        this.board[x][y] = SellsMeaning.Wall;
+        this.board[x][y] = CellTypes.Wall;
 
         return { x, y };
     }
 
     appendFood(x, y) {
-        this.board[x][y] = SellsMeaning.Food;
+        this.board[x][y] = CellTypes.Food;
 
         return { x, y };
     }
@@ -67,7 +67,7 @@ class BoardModel {
         const newTail = this.snake.end;
 
         if (!this.didSnakeEatLustTurn) {
-            this.board[lastTail.x][lastTail.y] = SellsMeaning.Empty;
+            this.board[lastTail.x][lastTail.y] = CellTypes.Empty;
         }
 
         const gameOverCondition = !this._isPointValid(
@@ -80,7 +80,7 @@ class BoardModel {
             return this._gameOver();
         }
 
-        this.didSnakeEatLustTurn = (this.board[head.x][head.y] === SellsMeaning.Food);
+        this.didSnakeEatLustTurn = (this.board[head.x][head.y] === CellTypes.Food);
 
         this._printSnakeTail();
 
@@ -104,8 +104,8 @@ class BoardModel {
         this.snake.tail.forEach(
             ({ x, y }, index) => {
                 (this.board[x])[y] = (index === 0)
-                ? SellsMeaning.SnakeHead
-                : SellsMeaning.SnakeTail;
+                ? CellTypes.SnakeHead
+                : CellTypes.SnakeTail;
             }
         );
     }
@@ -126,7 +126,7 @@ class BoardModel {
             ) {
                 if (!this._isPointValid(x, y)) {
                     image[inX][inY] = -1;
-                } else if (this.board[x][y] === SellsMeaning.Food) {
+                } else if (this.board[x][y] === CellTypes.Food) {
                     image[inX][inY] = 1;
                 } else {
                     image[inX][inY] = 0;
@@ -174,8 +174,8 @@ class BoardModel {
             (x > this.board.length - 1) ||
             (y < 0) ||
             (y > _.first(this.board).length - 1) ||
-            (this.board[x][y] === SellsMeaning.Wall) ||
-            (this.board[x][y] === SellsMeaning.SnakeTail)
+            (this.board[x][y] === CellTypes.Wall) ||
+            (this.board[x][y] === CellTypes.SnakeTail)
         );
     }
 
@@ -184,5 +184,5 @@ class BoardModel {
 export {
     BoardModel as BoardModel,
     Snake as SnakeModel,
-    SellsMeaning as Constants
+    CellTypes as Constants
 };

@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import * as actions from "../actions/actions";
 import store from "../stores/store";
 
-import render from "../views/boardView";
-import deadSnake from "../views/deadSnake";
-import spinner from "../views/spinnerView";
+import renderBoard from "../views/boardView";
+import renderDeadSnake from "../views/deadSnakeView";
+import renderSpinner from "../views/spinnerView";
 
 import { Requester, Impulser, KeyboardListener } from "../managers/externalManagers";
 
@@ -63,16 +63,11 @@ export default class Board extends React.Component {
     render() {
         const state = store.getState();
         if (state.get("isGameOver")) {
-            return deadSnake();
+            return renderDeadSnake();
         } else if (state.get("networkReady") == STATES.RETRIEVED_NETWORK) {
-            return render(
-                this.props.x,
-                this.props.y,
-                state.get("board"),
-                actions
-            );
+            return renderBoard(state.get("board"), actions);
         } else {
-            return spinner();
+            return renderSpinner();
         }
     }
 }

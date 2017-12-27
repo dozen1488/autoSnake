@@ -33,6 +33,8 @@ export function onClick(x, y, buttonNumber) {
         changedSquares = [gameManager.appendWall(x, y)];
     } else if (buttonNumber === MouseCLicks.rightButton) {
         changedSquares = [gameManager.appendFood(x, y)];
+    } else {
+        return;
     }
 
     Dispatcher.dispatch({
@@ -49,7 +51,7 @@ export function onHover(x, y) {
         isMouseWallClicked,
         isMouseFoodClicked
     } = Store.getState().toJS();
-    
+
     if (isMouseWallClicked) {
         changedSquares = [gameManager.appendWall(x, y)];
     } else if (isMouseFoodClicked) {
@@ -60,7 +62,7 @@ export function onHover(x, y) {
         changedSquares, type: ActionTypes.onHover
     });
 }
-    
+
 export function onRelease() {
     Dispatcher.dispatch({
         type: ActionTypes.onRelease
