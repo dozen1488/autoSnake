@@ -6,6 +6,7 @@ Install cross-platform modules: (from 'crossPlatformModels'):
 - npm i  
 
 Launch Ui building: (from 'srcr' folder):  
+- npm i  
 - npm run watch  
 
 Watch app on 'localhost:3002'  
