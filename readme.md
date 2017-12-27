@@ -5,7 +5,7 @@ Launch server: (from 'server' folder):
 Install cross-platform modules: (from 'crossPlatformModels'):  
 - npm i  
 
-Launch Ui building: (from 'srcr' folder):  
+Launch Ui building: (from 'src' folder):  
 - npm i  
 - npm run watch  
 

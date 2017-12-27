@@ -3,10 +3,10 @@ import "./styles/boardView.css";
 import React from "react";
 import PropTypes from "prop-types";
 import Square from "./squareView";
-import renderReadme from "./readmeView";
+import RenderReadme from "./readmeView";
 
-function renderBoard({ board, actions }) {
-    const rows = board.get(0).get("length");
+function RenderBoard({ board, actions }) {
+    const rows = board.get(0).size;
 
     return (
         <div className="container">
@@ -39,7 +39,7 @@ function renderBoard({ board, actions }) {
 }
 
 
-renderBoard.propTypes = {
+RenderBoard.propTypes = {
     rows: PropTypes.number,
     columns: PropTypes.number,
     board: PropTypes.object,
@@ -49,8 +49,8 @@ renderBoard.propTypes = {
 export default function render(board, actions) {
     return (
         <div id="root-container">
-            <renderReadme/>
-            <renderBoard
+            <RenderReadme/>
+            <RenderBoard
                 board={board}
                 actions={actions}
             />
