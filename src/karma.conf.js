@@ -8,14 +8,14 @@ module.exports = function(config) {
     basePath: "",
     frameworks: ["jasmine"],
     files: [
-      "tests/**/*.js"
+      "tests/**/!(*.jest).js"
     ],
     exclude: [
     ],
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      "tests/**/*.js": ["webpack"]
+      "tests/**/!(*.jest).js": ["webpack"]
     },
     // test results reporter to use
     // possible values: "dots", "progress"
@@ -29,7 +29,6 @@ module.exports = function(config) {
     singleRun: false,
     concurrency: Infinity,
     webpack: {
-
       resolve: {
         extensions: [".js", ".json", ".jsx", ".png"]
       },
