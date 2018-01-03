@@ -7,7 +7,7 @@
         "prod": "cross-env NODE_ENV=production node ./node_modules/webpack/bin/webpack.js --config webpack.config.js",
         "watch": "cross-env NODE_ENV=development node ./node_modules/webpack/bin/webpack.js --config webpack.config.js",
         "karma": "CHROME_BIN=/usr/bin/chromium-browser ./node_modules/karma/bin/karma start karma.conf.js",
-        "jest": "./node_modules/jest/bin/jest.js --testRegex tests/.*\\.js -u"
+        "jest": "./node_modules/jest/bin/jest.js --testRegex tests/.*\\.jest.js$"
     },
     "author": "Dmitry",
     "license": "MIT",
@@ -28,6 +28,7 @@
         "css-loader": "^0.28.7",
         "enzyme": "^3.3.0",
         "enzyme-adapter-react-16": "^1.1.1",
+        "enzyme-to-json": "^3.3.0",
         "eslint": "^3.19.0",
         "eslint-plugin-import": "^2.8.0",
         "eslint-plugin-jasmine": "^2.9.1",
@@ -61,5 +62,11 @@
         "react-router": "^4.2.0",
         "rotate-matrix": "0.0.3",
         "synaptic": "^1.1.4"
+    },
+    "jest": {
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
+            "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js"
+        }
     }
 }

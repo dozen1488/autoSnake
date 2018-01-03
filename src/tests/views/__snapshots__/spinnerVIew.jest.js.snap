@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`README header renders correctly equals with snapshot 1`] = `
+<renderSpinner>
+  <div
+    className="fulfilling-bouncing-circle-spinner"
+  >
+    <div
+      className="circle"
+    />
+    <div
+      className="orbit"
+    />
+  </div>
+</renderSpinner>
+`;

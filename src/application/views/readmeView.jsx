@@ -2,7 +2,7 @@ import React from "react";
 
 export default function renderReadme() {
     return (
-            <div className="container">
+        <div className="container">
             <p className="readme-header">
                 Змейка с примитивным AI. Распознаёт окружение вокруг себя в радиусе 1 квадрата.
                 При перезагрузке стреницы отсылает опыт на сервер.

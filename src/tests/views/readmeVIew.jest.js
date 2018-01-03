@@ -1,15 +1,18 @@
 /* eslint-env jest */
 
 import React from "react";
-import renderer from "react-test-renderer";
+import { mount, configure } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
+import toJson from "enzyme-to-json";
 
-import readmeRender from "../../application/views/readmeView";
+import RenderReadme from "../../application/views/readmeView.jsx";
+
+configure({ adapter: new Adapter() });
 
 describe("README header renders correctly", function() {
     it("equals with snapshot", function() {
         expect(
-            renderer.create(<readmeRender/>)
-            .toJSON()
+            toJson(mount(<RenderReadme/>))
         ).toMatchSnapshot();
     });
 });

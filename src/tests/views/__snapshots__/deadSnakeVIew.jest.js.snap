@@ -1,3 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`README header renders correctly equals with snapshot 1`] = `<deadSnakeRender />`;
+exports[`README header renders correctly equals with snapshot 1`] = `
+<renderDeadSnake>
+  <p
+    className="readme-header"
+  >
+    Snake has died. Refresh page please
+  </p>
+</renderDeadSnake>
+`;

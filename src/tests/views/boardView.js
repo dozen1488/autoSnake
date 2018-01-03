@@ -13,7 +13,7 @@ describe("README header renders correctly", function() {
     it("equals with snapshot", function() {
         expect(
             renderer.create(<readmeRender/>)
-            .toJSON()
+                .toJSON()
         ).toMatchSnapshot();
     });
 });
