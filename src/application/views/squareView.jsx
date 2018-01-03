@@ -8,8 +8,7 @@ export default class Square extends React.PureComponent {
         x: PropTypes.number,
         y: PropTypes.number,
         status: PropTypes.number,
-        actions: PropTypes.object,
-        stateUpdate: PropTypes.func
+        actions: PropTypes.object
     }
 
     render() {
