@@ -9,7 +9,7 @@ import SpinnerRender from "../../application/views/spinnerView";
 
 configure({ adapter: new Adapter() });
 
-describe("README header renders correctly", function() {
+describe("Spinner renders correctly", function() {
     it("equals with snapshot", function() {
         expect(
             toJson(mount(<SpinnerRender/>))

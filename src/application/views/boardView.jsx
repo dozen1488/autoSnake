@@ -46,7 +46,7 @@ RenderBoard.propTypes = {
     actions: PropTypes.objectOf(PropTypes.func),
 };
 
-export default function render(board, actions) {
+export default function render({ board, actions }) {
     return (
         <div id="root-container">
             <RenderReadme/>

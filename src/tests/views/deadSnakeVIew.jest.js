@@ -9,7 +9,7 @@ import DeadSnakeRender from "../../application/views/deadSnakeView";
 
 configure({ adapter: new Adapter() });
 
-describe("README header renders correctly", function() {
+describe("Dead snake renders correctly", function() {
     it("equals with snapshot", function() {
         expect(
             toJson(mount(<DeadSnakeRender/>))

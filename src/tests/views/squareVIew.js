@@ -10,12 +10,12 @@ import Square from "../../application/views/squareView";
 
 configure({ adapter: new Adapter() });
 
-describe("README header renders correctly", function() {
+describe("Square renders properly", function() {
     it("has properly src attribute", function() {
-
+        // initialization
         const compareObject = { src: ImageUrls[0] };
         const testProps = { x: 1, y: 2, status: 0 };
-
+        // action
         const actualProps = mount(<Square
                 x={testProps.x}
                 y={testProps.y}
@@ -23,12 +23,12 @@ describe("README header renders correctly", function() {
             />)
             .find("img")
             .props();
-
+        // check
         expect(actualProps.src).toEqual(compareObject.src);
     });
 
     it("properly calls all callbacks", function() {
-        
+        // initialization
         let hoveredObject = {};
         let clickedObject = {};
         let mouseReleased = false;
@@ -40,7 +40,7 @@ describe("README header renders correctly", function() {
         };
 
         const testProps = { x: 1, y: 2, status: 0 };
-
+        // action
         const renderedSquare = mount(<Square
                 x={testProps.x}
                 y={testProps.y}
@@ -49,10 +49,10 @@ describe("README header renders correctly", function() {
             />
         );
 
-        renderedSquare.simulate('mouseOver');
-        renderedSquare.simulate('mouseDown');
-        renderedSquare.simulate('mouseUp');
-    
+        renderedSquare.simulate("mouseOver");
+        renderedSquare.simulate("mouseDown");
+        renderedSquare.simulate("mouseUp");
+        // check
         expect(
             _.isEqual(hoveredObject, { x: testProps.x, y: testProps.y }) &&
             _.isEqual(clickedObject, { x: testProps.x, y: testProps.y }) &&
