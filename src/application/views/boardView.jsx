@@ -45,11 +45,6 @@ RenderBoard.propTypes = {
     actions: PropTypes.objectOf(PropTypes.func),
 };
 
-render.propTypes = {
-    board: PropTypes.array,
-    actions: PropTypes.object
-};
-
 export default function render({ board, actions }) {
     return (
         <div id="root-container">
@@ -61,3 +56,8 @@ export default function render({ board, actions }) {
         </div>
     );
 }
+
+render.propTypes = {
+    board: PropTypes.array,
+    actions: PropTypes.object
+};
