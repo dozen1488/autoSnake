@@ -48,7 +48,7 @@ class BoardModel {
 
         return { x, y };
     }
-    
+
     updateState() {
         const boardSnap = this._snapshotBoardAroundSnake(
             this.radiusOfVisionForNetwork,
@@ -58,11 +58,8 @@ class BoardModel {
         const lastHead = this.snake.head;
         const lastTail = this.snake.end;
 
-        const { head, turn } = this.snake.move(
-            this.didSnakeEatLustTurn,
-            boardSnap
-        );
-
+        const { head, turn } = this.snake.move(this.didSnakeEatLustTurn, boardSnap);
+        
         const newHead = this.snake.head;
         const newTail = this.snake.end;
 
@@ -70,9 +67,7 @@ class BoardModel {
             this.board[lastTail.x][lastTail.y] = CellTypes.Empty;
         }
 
-        const gameOverCondition = !this._isPointValid(
-            head.x, head.y
-        );
+        const gameOverCondition = !this._isPointValid(head.x, head.y);
 
         if (gameOverCondition) {
             this._saveSnapshotForNetwork(boardSnap, -1, turn);
@@ -89,17 +84,14 @@ class BoardModel {
         } else {
             this._saveSnapshotForNetwork(boardSnap, 0, turn);
         }
-        
-        return {
-            isGameOver: false,
-            changedSquares: [lastHead, lastTail, newHead, newTail]
-        };
+
+        return { isGameOver: false, changedSquares: [lastHead, lastTail, newHead, newTail] };
     }
 
     get isGameOver() {
         return !!this._isGameOver;
     }
-    
+
     _printSnakeTail() {
         this.snake.tail.forEach(
             ({ x, y }, index) => {
@@ -136,16 +128,16 @@ class BoardModel {
 
         switch (snakeDirection) {
             case DIRECTIONS.LEFT:
-            break;
+                break;
             case DIRECTIONS.RIGHT:
                 image = rotateMatrix(image, 2);
-            break;
+                break;
             case DIRECTIONS.UP:
                 image = rotateMatrix(image, 3);
-            break;
+                break;
             case DIRECTIONS.DOWN:
                 image = rotateMatrix(image);
-            break;
+                break;
         }
 
         return _.flatten(image);

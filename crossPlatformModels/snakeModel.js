@@ -47,7 +47,7 @@ export class Snake {
 
         //  push to start of array
         this._tail.unshift(newHead);
-        
+
         if (!withIncrement) {
             this._tail.pop();
         }
@@ -89,13 +89,13 @@ class Direction {
     get direction() {
         return this._dir;
     }
-    
+
     left() {
         this._dir--;
         if (this._dir < 0) {
             this._dir = this._maxDIr;
         }
-        
+
         return this;
     }
 

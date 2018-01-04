@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 function trainNetwork(images = require("./images.json")) {
     const myNetwork = generateNetwork(1);
-    
+
     const learningRate = 0.1;
     let img = 0;
     let tryNumber = 20;
@@ -13,19 +13,19 @@ function trainNetwork(images = require("./images.json")) {
             switch (images[img].result) {
                 //  Result was wrong
                 case -1:
+                    //  Rise all inputs, except decision
                     networkDecision = [1, 1, 1];
                     networkDecision[images[img].decision + 1] = 0;
-                    //  Rise all inputs, except decision
                     break;
                 // Result was right
                 case 1:
+                    //  Rise input, equals to decision
                     networkDecision = [0, 0, 0];
                     networkDecision[images[img].decision + 1] = 1;
-                    //  Rise input, equals to decision
                     break;
             }
             myNetwork.propagate(learningRate, networkDecision);
-        
+
             if (++img >= images.length) {
                 img = 0;
             }
@@ -34,7 +34,7 @@ function trainNetwork(images = require("./images.json")) {
     if (tryNumber === 0) {
         console.log("Network untrainable");
     }
-    
+
     return myNetwork.toJSON();
 }
 
