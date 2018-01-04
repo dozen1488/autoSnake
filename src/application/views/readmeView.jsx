@@ -16,6 +16,11 @@ export default function renderReadme() {
             <p className="readme-header"> &lt; Space &gt; - остановить змейку</p>
             <p className="readme-header"> &lt; Right Click &gt; - создать стену</p>
             <p className="readme-header"> &lt; Left Click &gt; - создать пищу</p>
+            <p>
+                Запуск тестов: <br/>
+                1) npm run karma - проверка ренедра квадрата и доски <br/>
+                2) npm run jest - сравнение рендера примитивных компонентов со снимками
+            </p>
         </div>
     );
 }
