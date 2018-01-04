@@ -66,7 +66,7 @@ class Store extends ReduceStore {
 
 function processBoardChange(state, action) {
     let board = state.get("board");
-    
+
     board = updateBoardWIthSquares(board, action.changedSquares);
 
     return state

@@ -14,8 +14,7 @@ function RenderBoard({ board, actions }) {
                 <tbody>
                     {board.map((arr, row) =>
                         (<tr key={row}>
-                            {arr.map(
-                                (none, column) => {
+                            {arr.map((none, column) => {
                                     const status = board.get(column).get(rows - row - 1);
 
                                     return (
@@ -44,6 +43,11 @@ RenderBoard.propTypes = {
     columns: PropTypes.number,
     board: PropTypes.object,
     actions: PropTypes.objectOf(PropTypes.func),
+};
+
+render.propTypes = {
+    board: PropTypes.array,
+    actions: PropTypes.object
 };
 
 export default function render({ board, actions }) {

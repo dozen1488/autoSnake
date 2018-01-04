@@ -37,7 +37,7 @@ class GameManager {
         this._boardModel = new BoardModel(dimensions, networkSettings);
         this._impulseCallback = impulseCallback;
         this._gameOverCallback = gameOverCallback;
-        
+
         this._impulsingFunc = Impulser.startImpulsing(() => this._impulseBoard());
     }
 

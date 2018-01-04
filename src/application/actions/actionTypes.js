@@ -6,7 +6,7 @@ export default keymirror({
 
     "changeBoard": null,
     "gameOver": null,
-    
+
     "onClick": null,
     "onHover": null,
     "onRelease": null,
