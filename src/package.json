@@ -6,8 +6,8 @@
     "scripts": {
         "prod": "cross-env NODE_ENV=production node ./node_modules/webpack/bin/webpack.js --config webpack.config.js",
         "watch": "cross-env NODE_ENV=development node ./node_modules/webpack/bin/webpack.js --config webpack.config.js",
-        "karma": "CHROME_BIN=/usr/bin/chromium-browser ./node_modules/karma/bin/karma start karma.conf.js",
-        "jest": "./node_modules/jest/bin/jest.js --testRegex tests/.*\\.jest.js$"
+        "test_application": "CHROME_BIN=/usr/bin/chromium-browser ./node_modules/karma/bin/karma start karma.conf.js",
+        "test_snapshots": "./node_modules/jest/bin/jest.js --testRegex tests/.*\\.jest.js$"
     },
     "author": "Dmitry",
     "license": "MIT",

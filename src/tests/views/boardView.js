@@ -1,5 +1,4 @@
 /* eslint-env jest */
-import _ from "lodash";
 import React from "react";
 import { mount, configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";

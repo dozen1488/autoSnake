@@ -8,7 +8,8 @@ import renderBoard from "../views/boardView";
 import renderDeadSnake from "../views/deadSnakeView";
 import renderSpinner from "../views/spinnerView";
 
-import { Requester, KeyboardListener } from "../managers/externalManagers";
+import KeyboardListener from "../managers/keyboardListener";
+import Requester from "../managers/requester";
 
 export default class Board extends React.Component {
 

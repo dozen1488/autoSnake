@@ -15,20 +15,19 @@ function RenderBoard({ board, actions }) {
                     {board.map((arr, row) =>
                         (<tr key={row}>
                             {arr.map((none, column) => {
-                                    const status = board.get(column).get(rows - row - 1);
+                                const status = board.get(column).get(rows - row - 1);
 
-                                    return (
-                                        <td key={column} className="square">
-                                            <Square
-                                                status={status}
-                                                x={column}
-                                                y={rows - row - 1}
-                                                actions={actions}
-                                            />
-                                        </td>
-                                    );
-                                })
-                            }
+                                return (
+                                    <td key={column} className="square">
+                                        <Square
+                                            status={status}
+                                            x={column}
+                                            y={rows - row - 1}
+                                            actions={actions}
+                                        />
+                                    </td>
+                                );
+                            })}
                         </tr>)
                     )}
                 </tbody>

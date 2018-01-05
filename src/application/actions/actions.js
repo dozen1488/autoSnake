@@ -3,7 +3,7 @@ import MouseCLicks from "../sharedConstants/MouseClickMeaning.json";
 
 import Store from "../stores/store";
 import Dispatcher from "../dispatcher/dispatcher";
-import { Requester } from "../managers/externalManagers";
+import Requester from "../managers/requester";
 import { impulseFrequency } from "../sharedConstants/configuration.json";
 import GameManager from "../managers/gameManager";
 
