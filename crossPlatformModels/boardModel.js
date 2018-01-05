@@ -177,5 +177,5 @@ class BoardModel {
 export {
     BoardModel as BoardModel,
     Snake as SnakeModel,
-    CellTypes as Constants
+    CellTypes as CellTypes
 };
