@@ -1,7 +1,8 @@
 import _ from "lodash";
 import rotateMatrix from "rotate-matrix";
 
-import { Snake, DIRECTIONS } from "./snakeModel";
+import { DIRECTIONS } from "./direction";
+import { Snake } from "./snakeModel";
 import CellTypes from "./CellTypes.json";
 import ErrorConstants from "./errorConstants.json";
 
@@ -35,7 +36,7 @@ class BoardModel {
         );
         this.radiusOfVisionForNetwork = radiusOfVisionForNetwork;
         this.path = [];
-        this.didSnakeEatLustTurn = false;
+        this.increaseSnake = false;
     }
     appendWall(x, y) {
         this.board[x][y] = CellTypes.Wall;
@@ -58,12 +59,12 @@ class BoardModel {
         const lastHead = this.snake.head;
         const lastTail = this.snake.end;
 
-        const { head, turn } = this.snake.move(this.didSnakeEatLustTurn, boardSnap);
-        
+        const { head, turn } = this.snake.move(this.increaseSnake, boardSnap);
+
         const newHead = this.snake.head;
         const newTail = this.snake.end;
 
-        if (!this.didSnakeEatLustTurn) {
+        if (!this.increaseSnake) {
             this.board[lastTail.x][lastTail.y] = CellTypes.Empty;
         }
 
@@ -75,11 +76,11 @@ class BoardModel {
             return this._gameOver();
         }
 
-        this.didSnakeEatLustTurn = (this.board[head.x][head.y] === CellTypes.Food);
+        this.increaseSnake = (this.board[head.x][head.y] === CellTypes.Food);
 
         this._printSnakeTail();
 
-        if (this.didSnakeEatLustTurn) {
+        if (this.increaseSnake) {
             this._saveSnapshotForNetwork(boardSnap, 1, turn);
         } else {
             this._saveSnapshotForNetwork(boardSnap, 0, turn);

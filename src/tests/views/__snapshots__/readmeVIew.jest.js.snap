@@ -32,7 +32,9 @@ exports[`README header renders correctly equals with snapshot 1`] = `
     >
        &lt; Left Click &gt; - создать пищу
     </p>
-    <p>
+    <p
+      className="readme-header"
+    >
       Запуск тестов: 
       <br />
       1) npm run karma - проверка ренедра квадрата и доски 
