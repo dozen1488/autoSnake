@@ -125,9 +125,10 @@ describe("Tests for store + dispatcher + action", () => {
         Actions.onClick(
             testX, testY, MouseMeanings.leftButton
         );
+        Actions.onHover(testX + 1, testY + 1);
         Actions.onRelease();
         Actions.onClick(
-            testX + 1, testY + 1, MouseMeanings.rightButton
+            testX + 2, testY + 2, MouseMeanings.rightButton
         );
         Actions.onRelease();
 
