@@ -59,7 +59,7 @@ export function onHover(x, y) {
     }
 
     Dispatcher.dispatch({
-        changedSquares, type: ActionTypes.onHover
+        changedSquares, type: ActionTypes.changeBoard
     });
 }
 
