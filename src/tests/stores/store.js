@@ -118,23 +118,24 @@ describe("Tests for store + dispatcher + action", () => {
     });
 
     it("Properly process clicks and release changes", () => {
-
-        let shouldBeWall, shouldBeFood;
-
         // action
-        Actions.onClick(
-            testX, testY, MouseMeanings.leftButton
-        );
+        Actions.onClick(testX, testY, MouseMeanings.leftButton);
         Actions.onHover(testX + 1, testY + 1);
         Actions.onRelease();
-        Actions.onClick(
-            testX + 2, testY + 2, MouseMeanings.rightButton
-        );
+        Actions.onClick(testX + 2, testY + 2, MouseMeanings.rightButton);
+        Actions.onHover(testX + 3, testY + 3);
         Actions.onRelease();
 
         // check
-        shouldBeWall = Store.getState().toJS().board[testX][testY] === CellTypes.Wall;
-        shouldBeFood = Store.getState().toJS().board[testX + 1][testY + 1] === CellTypes.Food;
+        const board = Store.getState().toJS().board;
+        const shouldBeWall = (
+            board[testX][testY] === CellTypes.Wall &&
+            board[testX + 1][testY + 1] === CellTypes.Wall
+        );
+        const shouldBeFood = (
+            board[testX + 2][testY + 2] === CellTypes.Food &&
+            board[testX + 3][testY + 3] === CellTypes.Food
+        );
 
         expect(shouldBeWall && shouldBeFood).toEqual(true);
     });

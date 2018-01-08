@@ -8,25 +8,11 @@ import renderBoard from "../views/boardView";
 import renderDeadSnake from "../views/deadSnakeView";
 import renderSpinner from "../views/spinnerView";
 
-import KeyboardListener from "../managers/keyboardListener";
-import Requester from "../managers/requester";
-
 export default class Board extends React.Component {
 
     constructor(...args) {
         super(...args);
-
-        actions.initStore(
-            this.props.x,
-            this.props.y,
-            this.props.radiusOfVisionForNetwork
-        );
-
-        Requester.receiveNetwork(actions.networkReady);
-
-        const listener = store.addListener(
-            () => this.networkReadyHandler(listener)
-        );
+        store.addListener(this.changedStateHandler.bind(this));
     }
 
     componentDidUpdate() {
@@ -40,24 +26,11 @@ export default class Board extends React.Component {
                         return false;
                     })
                 );
+            delete this.componentDidUpdate;
         }
     }
 
-    networkReadyHandler(listener) {
-        listener.remove();
-
-        KeyboardListener.startListening(actions.keyPressed);
-        const innerListener = store.addListener(
-            () => this.changedStateHandler(innerListener)
-        );
-        this.forceUpdate();
-    }
-
-    changedStateHandler(innerListener) {
-        const isGameOver = store.getState().get("isGameOver");
-        if (isGameOver) {
-            innerListener.remove();
-        }
+    changedStateHandler() {
         this.forceUpdate();
     }
 
