@@ -96,6 +96,7 @@ describe("Tests for store + dispatcher + action", () => {
                     previousBoard,
                     Store.getState().board
                 );
+
                 expect(
                     !isStatesEqual &&
                     (calltimes === 2)
@@ -114,6 +115,7 @@ describe("Tests for store + dispatcher + action", () => {
 
         // check
         const actualStatus = Store.getState().toJS().board[testX][testY];
+
         expect(actualStatus).toEqual(testStatus);
     });
 
@@ -146,7 +148,7 @@ describe("Tests for store + dispatcher + action", () => {
 
         // check
         const isPaused = Store.getState().get("isPaused") == true;
-        let noImpulses = !Impulser.isImpulsing();
+        const noImpulses = !Impulser.isImpulsing();
 
         expect(isPaused && noImpulses).toEqual(true);
     });
