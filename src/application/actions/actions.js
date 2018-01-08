@@ -2,7 +2,6 @@ import ActionTypes from "./actionTypes";
 import MouseCLicks from "../sharedConstants/MouseClickMeaning.json";
 
 import Store from "../stores/store";
-import Dispatcher from "../dispatcher/dispatcher";
 import Requester from "../managers/requester";
 import { impulseFrequency } from "../sharedConstants/configuration.json";
 import GameManager from "../managers/gameManager";
@@ -10,20 +9,20 @@ import GameManager from "../managers/gameManager";
 let gameManager;
 
 export function changeBoard(changedSquares) {
-    Dispatcher.dispatch({
+    return {
         type: ActionTypes.changeBoard, changedSquares
-    });
+    };
 }
 
 export function gameOver(images) {
 
     gameManager.pauseImpulsing();
 
-    Dispatcher.dispatch({
-        type: ActionTypes.gameOver
-    });
-
     Requester.sendImages(images);
+
+    return {
+        type: ActionTypes.gameOver
+    };
 }
 
 export function onClick(x, y, buttonNumber) {
@@ -37,11 +36,11 @@ export function onClick(x, y, buttonNumber) {
         return;
     }
 
-    Dispatcher.dispatch({
+    return {
         changedSquares,
         type: ActionTypes.onClick,
         buttonType: buttonNumber
-    });
+    };
 }
 
 export function onHover(x, y) {
@@ -50,7 +49,7 @@ export function onHover(x, y) {
     const {
         isMouseWallClicked,
         isMouseFoodClicked
-    } = Store.getState().toJS();
+    } = Store.getState().get("mouseState").toJS();
 
     if (isMouseWallClicked) {
         changedSquares = [gameManager.appendWall(x, y)];
@@ -58,30 +57,34 @@ export function onHover(x, y) {
         changedSquares = [gameManager.appendFood(x, y)];
     }
 
-    Dispatcher.dispatch({
-        changedSquares, type: ActionTypes.changeBoard
-    });
+    return {
+        changedSquares,
+        type: ActionTypes.changeBoard
+    };
 }
 
 export function onRelease() {
-    Dispatcher.dispatch({
+    return {
         type: ActionTypes.onRelease
-    });
+    };
 }
 
 export function initStore(x, y, radiusOfVisionForNetwork) {
-    Dispatcher.dispatch({
+    return {
         x, y, type: ActionTypes.initStore, radiusOfVisionForNetwork
-    });
+    };
 }
 
 export function networkReady(network) {
 
-    const { x, y, radiusOfVisionForNetwork } = Store.getState().toJS();
+    const { x, y, radiusOfVisionForNetwork } = Store
+        .getState()
+        .get("boardState")
+        .toJS();
 
     gameManager = new GameManager(
-        changeBoard,
-        gameOver,
+        (...args) => Store.dispatch(changeBoard(...args)),
+        (...args) => Store.dispatch(gameOver(...args)),
         impulseFrequency,
         {
             sizeOfX: x,
@@ -94,9 +97,9 @@ export function networkReady(network) {
 
     const board = gameManager._boardModel.board;
 
-    Dispatcher.dispatch({
+    return {
         type: ActionTypes.networkReady, board
-    });
+    };
 }
 
 export function keyPressed(key) {
@@ -108,8 +111,11 @@ export function keyPressed(key) {
         } else {
             gameManager.pauseImpulsing();
         }
-        Dispatcher.dispatch({
+
+        return {
             type: ActionTypes.spacePressed
-        });
+        };
+    } else {
+        return {};
     }
 }

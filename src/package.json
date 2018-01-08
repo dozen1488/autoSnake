@@ -60,7 +60,10 @@
         "prop-types": "^15.6.0",
         "react": "^16.1.1",
         "react-dom": "^16.1.1",
+        "react-redux": "^5.0.6",
         "react-router": "^4.2.0",
+        "redux": "^3.7.2",
+        "redux-immutablejs": "0.0.8",
         "rotate-matrix": "0.0.3",
         "synaptic": "^1.1.4"
     },

@@ -1,22 +1,30 @@
+import _ from "lodash";
 import React from "react";
+import { Map } from "immutable";
 import PropTypes from "prop-types";
-
-import * as actions from "../actions/actions";
-import store from "../stores/store";
+import { connect } from "react-redux";
 
 import renderBoard from "../views/boardView";
-import renderDeadSnake from "../views/deadSnakeView";
+import * as actions from "../actions/actions";
 import renderSpinner from "../views/spinnerView";
+import renderDeadSnake from "../views/deadSnakeView";
 
-export default class Board extends React.Component {
+function mapStateToProps(state) {
+    return { state: state };
+}
 
-    constructor(...args) {
-        super(...args);
-        store.addListener(this.changedStateHandler.bind(this));
-    }
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: _.mapValues(actions, (mappedAction) => {
+            return (...args) => dispatch(mappedAction(...args));
+        })
+    };
+}
+
+class Board extends React.Component {
 
     componentDidUpdate() {
-        if (store.getState().toJS().networkReady === STATES.RETRIEVED_NETWORK) {
+        if (this.props.state.get("gameState").get("networkReady") === STATES.RETRIEVED_NETWORK) {
         //  Preventing context menu from boards
             [...document.getElementsByClassName("Board")]
                 .forEach(el =>
@@ -30,18 +38,15 @@ export default class Board extends React.Component {
         }
     }
 
-    changedStateHandler() {
-        this.forceUpdate();
-    }
 
     render() {
-        const state = store.getState();
-        if (state.get("isGameOver")) {
+        const { state, actions } = this.props;
+        if (state.get("gameState").get("isGameOver")) {
             return renderDeadSnake();
-        } else if (state.get("networkReady") == STATES.RETRIEVED_NETWORK) {
+        } else if (state.get("gameState").get("networkReady") == STATES.RETRIEVED_NETWORK) {
             return renderBoard(
                 {
-                    board: state.get("board"),
+                    board: state.get("boardState").get("board"),
                     actions
                 }
             );
@@ -52,9 +57,8 @@ export default class Board extends React.Component {
 }
 
 Board.propTypes = {
-    x: PropTypes.number,
-    y: PropTypes.number,
-    radiusOfVisionForNetwork: PropTypes.number
+    state: PropTypes.instanceOf(Map),
+    actions: PropTypes.objectOf(PropTypes.func)
 };
 
 const STATES = {
@@ -62,3 +66,7 @@ const STATES = {
     "RETRIEVED_NETWORK": true
 };
 
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Board);

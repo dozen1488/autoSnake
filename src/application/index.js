@@ -4,6 +4,7 @@ import "./index.css";
 import React from "react";
 import ReactDOM from "react-dom";
 
+import store from "./stores/store";
 import initScript from "./initScript";
 import BoardComponent from "./components/board";
 import { x, y, radiusOfVisionForNetwork } from "./sharedConstants/configuration.json";
@@ -11,7 +12,5 @@ import { x, y, radiusOfVisionForNetwork } from "./sharedConstants/configuration.
 initScript(x, y, radiusOfVisionForNetwork);
 
 ReactDOM.render(<BoardComponent
-    x={x}
-    y={y}
-    radiusOfVisionForNetwork={radiusOfVisionForNetwork}
+    store={store}
 />, document.getElementById("Application"));
