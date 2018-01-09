@@ -1,6 +1,7 @@
 /* eslint-env jasmine */
 // initialization
 import _ from "lodash";
+import { fromJS } from "immutable";
 
 import { BoardModel, CellTypes } from "../../../crossPlatformModels/boardModel";
 import MouseMeanings from "../../application/sharedConstants/MouseClickMeaning";
@@ -19,26 +20,32 @@ describe("Tests for store + dispatcher + action", () => {
     const radiusOfVisionForNetwork = 1;
 
     const defaultStore = {
-        isMouseWallClicked: false,
-        isMouseFoodClicked: false,
-        isGameOver: false,
-        isPaused: false,
-        networkReady: false
+        mouseState: {
+            isMouseWallClicked: false,
+            isMouseFoodClicked: false
+        },
+        gameState: {
+            isGameOver: false,
+            isPaused: false,
+            networkReady: false
+        }
     };
 
     it("Properly initialize", () => {
 
         const stateStandart = _.merge(
             {
-                x: sizeX,
-                y: sizeY,
-                radiusOfVisionForNetwork: radiusOfVisionForNetwork,
+                boardState: {
+                    x: sizeX,
+                    y: sizeY,
+                    radiusOfVisionForNetwork: radiusOfVisionForNetwork,
+                }
             },
             defaultStore
         );
 
         // action
-        Actions.initStore(sizeX, sizeY, radiusOfVisionForNetwork);
+        Store.dispatch(Actions.initStore(sizeX, sizeY, radiusOfVisionForNetwork));
 
         // check
         const actualState = Store.getState().toJS();
@@ -62,13 +69,13 @@ describe("Tests for store + dispatcher + action", () => {
 
         const stateStandart = _.merge(
             {
-                board: board,
+                boardState: { board },
             }, defaultStore
         );
-        stateStandart.networkReady = true;
+        stateStandart.gameState.networkReady = true;
 
         // action
-        Actions.networkReady(jsonNetwork);
+        Store.dispatch(Actions.networkReady(jsonNetwork));
 
         // check
         const actualState = Store.getState().toJS();
@@ -85,17 +92,18 @@ describe("Tests for store + dispatcher + action", () => {
         const originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
-        const listener = Store.addListener(() => {
+        const listener = Store.subscribe(() => {
             calltimes++;
             if (!previousBoard) {
-                previousBoard = Store.getState().toJS().board;
+                previousBoard = Store.getState().get("boardState").toJS();
             } else {
-                listener.remove();
+                listener();
                 jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
                 const isStatesEqual = _.isEqual(
                     previousBoard,
-                    Store.getState().board
+                    Store.getState().get("boardState").toJS()
                 );
+
                 expect(
                     !isStatesEqual &&
                     (calltimes === 2)
@@ -110,25 +118,26 @@ describe("Tests for store + dispatcher + action", () => {
         const changedSquares = [{ x: testX, y: testY, state: testStatus }];
 
         // action
-        Actions.changeBoard(changedSquares);
+        Store.dispatch(Actions.changeBoard(changedSquares));
 
         // check
-        const actualStatus = Store.getState().toJS().board[testX][testY];
+        const actualStatus = Store.getState().get("boardState").toJS().board[testX][testY];
+
         expect(actualStatus).toEqual(testStatus);
     });
 
     it("Properly process clicks and release changes", () => {
         // action
-        Actions.onClick(testX, testY, MouseMeanings.leftButton);
-        Actions.onHover(testX + 1, testY + 1);
-        Actions.onRelease();
-        Actions.onClick(testX + 2, testY + 2, MouseMeanings.rightButton);
-        Actions.onHover(testX + 3, testY + 3);
-        Actions.onRelease();
+        Store.dispatch(Actions.onClick(testX, testY, MouseMeanings.leftButton));
+        Store.dispatch(Actions.onHover(testX + 1, testY + 1));
+        Store.dispatch(Actions.onRelease());
+        Store.dispatch(Actions.onClick(testX + 2, testY + 2, MouseMeanings.rightButton));
+        Store.dispatch(Actions.onHover(testX + 3, testY + 3));
+        Store.dispatch(Actions.onRelease());
 
         // check
-        const board = Store.getState().toJS().board;
-        const shouldBeWall = (
+        const board = Store.getState().get("boardState").toJS().board;
+        const shouldBeWalls = (
             board[testX][testY] === CellTypes.Wall &&
             board[testX + 1][testY + 1] === CellTypes.Wall
         );
@@ -137,16 +146,16 @@ describe("Tests for store + dispatcher + action", () => {
             board[testX + 3][testY + 3] === CellTypes.Food
         );
 
-        expect(shouldBeWall && shouldBeFood).toEqual(true);
+        expect(shouldBeWalls && shouldBeFood).toEqual(true);
     });
 
     it("Properly processes pause", () => {
         // action
-        Actions.keyPressed("Space");
+        Store.dispatch(Actions.keyPressed("Space"));
 
         // check
-        const isPaused = Store.getState().get("isPaused") == true;
-        let noImpulses = !Impulser.isImpulsing();
+        const isPaused = Store.getState().get("gameState").get("isPaused") == true;
+        const noImpulses = !Impulser.isImpulsing();
 
         expect(isPaused && noImpulses).toEqual(true);
     });
