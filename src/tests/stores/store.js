@@ -1,7 +1,6 @@
 /* eslint-env jasmine */
 // initialization
 import _ from "lodash";
-import { fromJS } from "immutable";
 
 import { BoardModel, CellTypes } from "../../../crossPlatformModels/boardModel";
 import MouseMeanings from "../../application/sharedConstants/MouseClickMeaning";
@@ -104,10 +103,8 @@ describe("Tests for store + dispatcher + action", () => {
                     Store.getState().get("boardState").toJS()
                 );
 
-                expect(
-                    !isStatesEqual &&
-                    (calltimes === 2)
-                ).toEqual(true);
+                expect(isStatesEqual).toEqual(false);
+                expect(calltimes).toEqual(2);
                 done();
             }
         });
@@ -137,16 +134,11 @@ describe("Tests for store + dispatcher + action", () => {
 
         // check
         const board = Store.getState().get("boardState").toJS().board;
-        const shouldBeWalls = (
-            board[testX][testY] === CellTypes.Wall &&
-            board[testX + 1][testY + 1] === CellTypes.Wall
-        );
-        const shouldBeFood = (
-            board[testX + 2][testY + 2] === CellTypes.Food &&
-            board[testX + 3][testY + 3] === CellTypes.Food
-        );
 
-        expect(shouldBeWalls && shouldBeFood).toEqual(true);
+        expect(board[testX][testY]).toEqual(CellTypes.Wall);
+        expect(board[testX + 1][testY + 1]).toEqual(CellTypes.Wall);
+        expect(board[testX + 2][testY + 2]).toEqual(CellTypes.Food);
+        expect(board[testX + 3][testY + 3]).toEqual(CellTypes.Food);
     });
 
     it("Properly processes pause", () => {
@@ -154,9 +146,7 @@ describe("Tests for store + dispatcher + action", () => {
         Store.dispatch(Actions.keyPressed("Space"));
 
         // check
-        const isPaused = Store.getState().get("gameState").get("isPaused") == true;
-        const noImpulses = !Impulser.isImpulsing();
-
-        expect(isPaused && noImpulses).toEqual(true);
+        expect(Store.getState().get("gameState").get("isPaused")).toEqual(true);
+        expect(Impulser.isImpulsing()).toEqual(false);
     });
 });

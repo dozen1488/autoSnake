@@ -105,7 +105,7 @@ export function networkReady(network) {
 export function keyPressed(key) {
     if (key === "Space") {
 
-        const { isPaused } = Store.getState().toJS();
+        const isPaused = Store.getState().get("gameState").get("isPaused");
         if (isPaused) {
             gameManager.resumeImpulsing();
         } else {

@@ -10,7 +10,11 @@ import renderSpinner from "../views/spinnerView";
 import renderDeadSnake from "../views/deadSnakeView";
 
 function mapStateToProps(state) {
-    return { state: state };
+    return {
+        isGameOver: state.get("gameState").get("isGameOver"),
+        networkReady: state.get("gameState").get("networkReady"),
+        board: state.get("boardState").get("board")
+    };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -21,35 +25,13 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-class Board extends React.Component {
-
-    componentDidUpdate() {
-        if (this.props.state.get("gameState").get("networkReady") === STATES.RETRIEVED_NETWORK) {
-        //  Preventing context menu from boards
-            [...document.getElementsByClassName("Board")]
-                .forEach(el =>
-                    el.addEventListener("contextmenu", event => {
-                        event.preventDefault();
-
-                        return false;
-                    })
-                );
-            delete this.componentDidUpdate;
-        }
-    }
-
-
+class Board extends React.PureComponent {
     render() {
-        const { state, actions } = this.props;
-        if (state.get("gameState").get("isGameOver")) {
+        const { isGameOver, networkReady, board, actions } = this.props;
+        if (isGameOver) {
             return renderDeadSnake();
-        } else if (state.get("gameState").get("networkReady") == STATES.RETRIEVED_NETWORK) {
-            return renderBoard(
-                {
-                    board: state.get("boardState").get("board"),
-                    actions
-                }
-            );
+        } else if (networkReady === STATES.RETRIEVED_NETWORK) {
+            return renderBoard({ board, actions });
         } else {
             return renderSpinner();
         }
@@ -57,7 +39,9 @@ class Board extends React.Component {
 }
 
 Board.propTypes = {
-    state: PropTypes.instanceOf(Map),
+    isGameOver: PropTypes.bool,
+    networkReady: PropTypes.bool,
+    board: PropTypes.instanceOf(Map),
     actions: PropTypes.objectOf(PropTypes.func)
 };
 

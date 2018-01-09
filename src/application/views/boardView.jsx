@@ -5,11 +5,17 @@ import PropTypes from "prop-types";
 import Square from "./squareView";
 import RenderReadme from "./readmeView";
 
+const preventEventDefault = event => {
+    event.preventDefault();
+
+    return false;
+};
+
 function RenderBoard({ board, actions }) {
     const rows = board.get(0).size;
 
     return (
-        <div className="container">
+        <div className="container" onContextMenu={preventEventDefault}>
             <table className="board">
                 <tbody>
                     {board.map((arr, row) =>
