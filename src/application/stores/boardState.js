@@ -1,12 +1,12 @@
-import { fromJS } from "immutable";
+import { Map, fromJS } from "immutable";
 
 import ActionTypes from "../actions/actionTypes";
 
-export default function reduceBoardState(state = fromJS({}), action) {
+export default function reduceBoardState(state = Map({}), action) {
     switch (action.type) {
         case ActionTypes.initStore:
 
-            return fromJS({
+            return Map({
                 x: action.x,
                 y: action.y,
                 radiusOfVisionForNetwork: action.radiusOfVisionForNetwork
@@ -30,8 +30,7 @@ function processBoardChange(state, action) {
 
     board = updateBoardWIthSquares(board, action.changedSquares);
 
-    return state
-        .set("board", board);
+    return state.set("board", board);
 }
 
 function updateBoardWIthSquares(immutableBoard, changedSquares) {

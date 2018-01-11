@@ -1,10 +1,10 @@
 import React from "react";
-import RednderReadme from "./readmeView";
+import RenderReadme from "./readmeView";
 
 export default function renderDeadSnake() {
     return (
         <div id="root-container">
-            <RednderReadme/>
+            <RenderReadme/>
             <p className="readme-header">
                 Snake has died. Refresh page please
             </p>

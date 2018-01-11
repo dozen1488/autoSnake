@@ -1,8 +1,8 @@
-import { fromJS } from "immutable";
+import { Map } from "immutable";
 
 import ActionTypes from "../actions/actionTypes";
 
-export default function reduceGameState(state = fromJS(defaultState), action) {
+export default function reduceGameState(state = Map(defaultState), action) {
     switch (action.type) {
         case ActionTypes.gameOver:
             return state.set("isGameOver", true);
