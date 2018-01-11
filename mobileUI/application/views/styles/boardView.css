@@ -1,0 +1,38 @@
+#root-container {
+    width: 80%;
+    margin: auto;
+}
+
+.container {
+    border: 4px #2e303f solid;
+    border-radius: 2%; 
+    padding: 2.5%;
+    background-color: #5a5e7f;
+    margin: auto;
+}
+
+.readme-header {
+    text-align: center;
+    margin: 0;
+    color: cornsilk;
+}
+
+.board {
+    border-collapse: collapse;
+    margin: auto;
+}
+
+.square {
+    padding: 0;
+    user-drag: none; 
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.square > img {
+    width: 30px;
+    height: 30px;
+}
