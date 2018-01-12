@@ -13,15 +13,21 @@ class Requester {
     }
 
     receiveNetwork(callback) {
-        return fetch(
-            URLS.GET_NETWORK,
-        ).then(
-            (res) => {
-                res
-                    .json()
-                    .then(res => callback(res));
-            }
-        );
+        if (callback) {
+            fetch(
+                URLS.GET_NETWORK,
+            ).then(
+                (res) => {
+                    res.json()
+                        .then(res => callback(res));
+                }
+            );
+
+            return;
+        } else {
+            return fetch(URLS.GET_NETWORK)
+                .then((res) => res.json());
+        }
     }
 }
 
