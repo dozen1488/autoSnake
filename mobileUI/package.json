@@ -1,41 +1,41 @@
 {
-    "name": "mobileUI",
-    "version": "0.1.0",
-    "private": true,
-    "devDependencies": {
-        "react-native-scripts": "1.8.1",
-        "jest-expo": "23.0.0",
-        "react-test-renderer": "16.0.0"
-    },
-    "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
-    "scripts": {
-        "start": "react-native-scripts start",
-        "eject": "react-native-scripts eject",
-        "android": "react-native-scripts android",
-        "ios": "react-native-scripts ios",
-        "test": "node node_modules/jest/bin/jest.js --watch"
-    },
-    "jest": {
-        "preset": "jest-expo"
-    },
-    "dependencies": {
-        "expo": "^23.0.4",
-        "react": "16.0.0",
-        "react-native": "0.50.3",
-        "brain": "^0.7.0",
-        "flux": "^3.1.3",
-        "immutable": "^3.8.2",
-        "keymirror": "^0.1.1",
-        "lodash": "^4.17.4",
-        "matrix-rotate": "0.0.2",
-        "prop-types": "^15.6.0",
-        "react": "^16.1.1",
-        "react-dom": "^16.1.1",
-        "react-redux": "^5.0.6",
-        "react-router": "^4.2.0",
-        "redux": "^3.7.2",
-        "redux-immutablejs": "0.0.8",
-        "rotate-matrix": "0.0.3",
-        "synaptic": "^1.1.4"
-    }
+  "name": "mobileUI",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-native-scripts": "1.8.1",
+    "jest-expo": "23.0.0",
+    "react-test-renderer": "16.0.0"
+  },
+  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "scripts": {
+    "start": "react-native-scripts start",
+    "eject": "react-native-scripts eject",
+    "android": "react-native-scripts android",
+    "ios": "react-native-scripts ios",
+    "test": "node node_modules/jest/bin/jest.js --watch"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "brain": "^0.7.0",
+    "expo": "^23.0.4",
+    "flux": "^3.1.3",
+    "immutable": "^3.8.2",
+    "keymirror": "^0.1.1",
+    "lodash": "^4.17.4",
+    "matrix-rotate": "0.0.2",
+    "prop-types": "^15.6.0",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "react-native": "0.50.3",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.2.0",
+    "redux": "^3.7.2",
+    "redux-immutablejs": "0.0.8",
+    "redux-saga": "^0.16.0",
+    "rotate-matrix": "0.0.3",
+    "synaptic": "^1.1.4"
+  }
 }

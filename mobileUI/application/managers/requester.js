@@ -26,8 +26,8 @@ class Requester {
 }
 
 const URLS = {
-    APPLY_IMAGES: "/applyImages",
-    GET_NETWORK: "/getNetwork"
+    APPLY_IMAGES: "http://192.168.14.52/applyImages",
+    GET_NETWORK: "http://192.168.14.52/getNetwork"
 };
 
 export default new Requester();

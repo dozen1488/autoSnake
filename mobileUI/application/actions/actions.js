@@ -25,21 +25,15 @@ export function gameOver(images) {
     };
 }
 
-export function onClick(x, y, buttonNumber) {
+export function onClick(x, y) {
     let changedSquares;
 
-    if (buttonNumber === MouseCLicks.leftButton) {
-        changedSquares = [gameManager.appendWall(x, y)];
-    } else if (buttonNumber === MouseCLicks.rightButton) {
-        changedSquares = [gameManager.appendFood(x, y)];
-    } else {
-        return;
-    }
+    changedSquares = [gameManager.appendWall(x, y)];
 
     return {
         changedSquares,
         type: ActionTypes.onClick,
-        buttonType: buttonNumber
+        buttonType: 0
     };
 }
 
