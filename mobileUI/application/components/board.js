@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react";
-import { Map } from "immutable";
+import { List } from "immutable";
 import PropTypes, { element } from "prop-types";
 import { connect } from "react-redux";
 import { View } from "react-native";
@@ -39,7 +39,7 @@ class Board extends React.PureComponent {
 Board.propTypes = {
     isGameOver: PropTypes.bool,
     networkReady: PropTypes.bool,
-    board: PropTypes.instanceOf(Map),
+    board: PropTypes.instanceOf(List),
     actions: PropTypes.objectOf(PropTypes.func)
 };
 

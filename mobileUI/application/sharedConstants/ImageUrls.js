@@ -1,6 +1,6 @@
 /* eslint-env node */
 
-import CellTypes from "../../../crossPlatformModels/CellTypes";
+import CellTypes from "../../crossPlatformModels/CellTypes";
 
 export default {
     [CellTypes.Empty]: require("../views/images/emptySquare.png"),

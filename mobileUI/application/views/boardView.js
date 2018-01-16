@@ -1,20 +1,63 @@
-import React from "react";
-import { PropTypes } from "prop-types";
-import { StyleSheet, Text, View } from "react-native";
+import PropTypes from "prop-types";
+import React, { PureComponent } from "react";
+import { View, Dimensions } from "react-native";
 
-export default class BoardView extends React.Component{
-    
-    static propTypes = {
-        board: PropTypes.array,
-        actions: PropTypes.object
-    };
-    
-    render() {
+import Square from "./squareView";
+import RenderReadme from "./readmeView";
+
+class RenderBoard extends PureComponent {
+    render(){
+        const { board, actions } = this.props;
+        const rows = board.get(0).size;
+
+        const edgeSize = Dimensions.get("window").width/rows;
+
         return (
-            <View>
-                <Text> Hello World </Text>
+            <View style={{flexDirection: "column"}}>
+                {board.map((arr, row) =>
+                    (<View key={row} style={{
+                        flex: 1, 
+                        flexDirection: "row"
+                    }}>
+                        {arr.map((none, column) => {
+                            const status = board.get(column).get(rows - row - 1);
+
+                            return (
+                                <Square
+                                    key={column}
+                                    status={status}
+                                    x={column}
+                                    y={rows - row - 1}
+                                    actions={actions}
+                                    style={{
+                                        width: edgeSize,
+                                        height: edgeSize
+                                    }}
+                                />
+                            );
+                        })}
+                    </View>)
+                )}
             </View>
         );
     }
 }
 
+
+RenderBoard.propTypes = {
+    rows: PropTypes.number,
+    columns: PropTypes.number,
+    board: PropTypes.object,
+    actions: PropTypes.objectOf(PropTypes.func),
+};
+
+export default class RootComponent extends PureComponent{
+    render(){
+        return (
+            <View>
+                <RenderReadme/>
+                <RenderBoard {...this.props}/>
+            </View>
+        );
+    }
+}
