@@ -1,4 +1,4 @@
-import { Image } from "react-native";
+import { Image, TouchableHighlight } from "react-native";
 import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
 
@@ -15,17 +15,14 @@ export default class Square extends PureComponent {
 
     render() {
         return (
-            <Image source={ImageUrls[this.props.status]} style={this.props.style}
-                onMouseOver={() => {
-                    this.props.actions.onHover(this.props.x, this.props.y);
-                }}
-                onMouseDown={({ button }) => {
-                    this.props.actions.onClick(this.props.x, this.props.y, button);
-                }}
-                onMouseUp={() => {
-                    this.props.actions.onRelease();
-                }}
-            />
+            <TouchableHighlight
+                onPress={() => this.props.actions.onClick(this.props.x, this.props.y, 0)}
+            >
+                <Image
+                    source={ImageUrls[this.props.status]}
+                    style={this.props.style}
+                />
+            </TouchableHighlight>
         );
     }
 }

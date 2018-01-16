@@ -1,5 +1,4 @@
 import ActionTypes from "./actionTypes";
-import MouseCLicks from "../sharedConstants/MouseClickMeaning.json";
 
 import Store from "../stores/store";
 import Requester from "../managers/requester";

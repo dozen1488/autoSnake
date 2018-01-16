@@ -1,13 +1,13 @@
 import _ from "lodash";
 import React from "react";
 import { List } from "immutable";
-import PropTypes, { element } from "prop-types";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { View } from "react-native";
 
 import RootComponent from "../views/boardView";
 import * as actions from "../actions/actions";
-
+import DeadSnakeComponent from "../views/deadSnakeView";
 
 function mapStateToProps(state) {
     return {
@@ -30,8 +30,10 @@ class Board extends React.PureComponent {
         const { isGameOver, networkReady, board, actions } = this.props;
         if (networkReady === STATES.RETRIEVED_NETWORK) {
             return <RootComponent board={board} actions={actions}/>;
+        } else if (isGameOver) {
+            return <DeadSnakeComponent/>;
         } else {
-            return <View/>
+            return <View/>;
         }
     }
 }

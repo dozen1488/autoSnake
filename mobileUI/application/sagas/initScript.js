@@ -4,7 +4,7 @@ import Requester from "../managers/requester";
 import * as actions from "../actions/actions";
 import { x, y, radiusOfVisionForNetwork } from "../sharedConstants/configuration.json";
 
-export default function* initFunction(dispatch) {
+export default function* initFunction() {
 
     yield put(actions.initStore(x, y, radiusOfVisionForNetwork));
     try {

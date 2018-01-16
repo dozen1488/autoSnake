@@ -25,9 +25,11 @@ class Requester {
     }
 }
 
+const HOST = "http://192.168.14.52";
+
 const URLS = {
-    APPLY_IMAGES: "http://192.168.14.52/applyImages",
-    GET_NETWORK: "http://192.168.14.52/getNetwork"
+    APPLY_IMAGES: `${HOST}/applyImages`,
+    GET_NETWORK: `${HOST}/getNetwork`
 };
 
 export default new Requester();
