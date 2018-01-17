@@ -24,41 +24,27 @@ export function gameOver(images) {
     };
 }
 
-export function onClick(x, y) {
-    let changedSquares;
-
-    changedSquares = [gameManager.appendWall(x, y)];
-
+export function onToggle(value) {
     return {
-        changedSquares,
-        type: ActionTypes.onClick,
-        buttonType: 0
+        type: ActionTypes.onToggle,
+        value: value
     };
 }
 
-export function onHover(x, y) {
+export function onClick(x, y) {
 
     let changedSquares = [];
-    const {
-        isMouseWallClicked,
-        isMouseFoodClicked
-    } = Store.getState().get("mouseState").toJS();
+    const isToggled = Store.getState().get("toggleState").get("toggle");
 
-    if (isMouseWallClicked) {
+    if (isToggled) {
         changedSquares = [gameManager.appendWall(x, y)];
-    } else if (isMouseFoodClicked) {
+    } else {
         changedSquares = [gameManager.appendFood(x, y)];
     }
 
     return {
         changedSquares,
         type: ActionTypes.changeBoard
-    };
-}
-
-export function onRelease() {
-    return {
-        type: ActionTypes.onRelease
     };
 }
 
@@ -95,20 +81,16 @@ export function networkReady(network) {
     };
 }
 
-export function keyPressed(key) {
-    if (key === "Space") {
+export function spacePressed() {
 
-        const isPaused = Store.getState().get("gameState").get("isPaused");
-        if (isPaused) {
-            gameManager.resumeImpulsing();
-        } else {
-            gameManager.pauseImpulsing();
-        }
-
-        return {
-            type: ActionTypes.spacePressed
-        };
+    const isPaused = Store.getState().get("gameState").get("isPaused");
+    if (isPaused) {
+        gameManager.resumeImpulsing();
     } else {
-        return {};
+        gameManager.pauseImpulsing();
     }
+
+    return {
+        type: ActionTypes.spacePressed
+    };
 }

@@ -11,8 +11,12 @@ import DeadSnakeComponent from "../views/deadSnakeView";
 
 function mapStateToProps(state) {
     return {
-        isGameOver: state.get("gameState").get("isGameOver"),
-        networkReady: state.get("gameState").get("networkReady"),
+        toggleState: state.get("toggleState").get("toggle"),
+        gameState: {
+            isGameOver: state.get("gameState").get("isGameOver"),
+            networkReady: state.get("gameState").get("networkReady"),
+            isPaused: state.get("gameState").get("isPaused")
+        },
         board: state.get("boardState").get("board")
     };
 }
@@ -27,11 +31,17 @@ function mapDispatchToProps(dispatch) {
 
 class Board extends React.PureComponent {
     render() {
-        const { isGameOver, networkReady, board, actions } = this.props;
-        if (networkReady === STATES.RETRIEVED_NETWORK) {
-            return <RootComponent board={board} actions={actions}/>;
-        } else if (isGameOver) {
+        const { gameState, board, actions, toggleState } = this.props;
+        const { networkReady, isGameOver } = gameState;
+        if (isGameOver) {
             return <DeadSnakeComponent/>;
+        } else if (networkReady === STATES.RETRIEVED_NETWORK) {
+            return <RootComponent
+                toggleState={toggleState}
+                gameState={gameState}
+                board={board}
+                actions={actions}
+            />;
         } else {
             return <View/>;
         }
@@ -39,8 +49,7 @@ class Board extends React.PureComponent {
 }
 
 Board.propTypes = {
-    isGameOver: PropTypes.bool,
-    networkReady: PropTypes.bool,
+    gameState: PropTypes.object,
     board: PropTypes.instanceOf(List),
     actions: PropTypes.objectOf(PropTypes.func)
 };

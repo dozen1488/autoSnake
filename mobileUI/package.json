@@ -41,6 +41,7 @@
     "redux-immutablejs": "0.0.8",
     "redux-saga": "^0.16.0",
     "rotate-matrix": "0.0.3",
-    "synaptic": "^1.1.4"
+    "synaptic": "^1.1.4",
+    "react-native-switch": "^1.3.0"
   }
 }

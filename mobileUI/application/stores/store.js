@@ -4,13 +4,13 @@ import { createStore, applyMiddleware } from "redux";
 
 import boardReducer from "./boardState";
 import gameReducer from "./gameState";
-import mouseReducer from "./mouseState";
+import toggleReducer from "./toggleState";
 import initScript from "../sagas/initScript";
 
 const rootReducer = combineReducers({
     boardState: boardReducer,
     gameState: gameReducer,
-    mouseState: mouseReducer
+    toggleState: toggleReducer
 });
 
 const sagaMiddleware = createSagaMiddleware();

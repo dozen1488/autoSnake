@@ -5,6 +5,7 @@ import { View, Dimensions } from "react-native";
 import * as Styles from "./styles/boardView";
 import Square from "./squareView";
 import RenderReadme from "./readmeView";
+import ButtonPanel from "./buttonPanelView";
 
 class RenderBoard extends PureComponent {
     render() {
@@ -54,6 +55,11 @@ export default class RootComponent extends PureComponent {
         return (
             <View>
                 <RenderReadme/>
+                <ButtonPanel
+                    actions={this.props.actions}
+                    isPaused={this.props.gameState.isPaused}
+                    toggleState={this.props.toggleState}
+                />
                 <RenderBoard {...this.props}/>
             </View>
         );

@@ -13,19 +13,25 @@ class Requester {
     }
 
     receiveNetwork(callback) {
-        return fetch(
-            URLS.GET_NETWORK,
-        ).then(
-            (res) => {
-                res
-                    .json()
-                    .then(res => callback(res));
-            }
-        );
+        if (callback) {
+            fetch(
+                URLS.GET_NETWORK,
+            ).then(
+                (res) => {
+                    res.json()
+                        .then(res => callback(res));
+                }
+            );
+
+            return;
+        } else {
+            return fetch(URLS.GET_NETWORK)
+                .then((res) => res.json());
+        }
     }
 }
 
-const HOST = "http://192.168.14.52";
+const HOST = "http://192.168.14.52:3002";
 
 const URLS = {
     APPLY_IMAGES: `${HOST}/applyImages`,

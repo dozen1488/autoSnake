@@ -16,7 +16,7 @@ export default class Square extends PureComponent {
     render() {
         return (
             <TouchableHighlight
-                onPress={() => this.props.actions.onClick(this.props.x, this.props.y, 0)}
+                onPress={() => this.props.actions.onClick(this.props.x, this.props.y)}
             >
                 <Image
                     source={ImageUrls[this.props.status]}
