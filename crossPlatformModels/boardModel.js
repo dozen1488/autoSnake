@@ -145,11 +145,13 @@ class BoardModel {
     }
 
     _saveSnapshotForNetwork(snapshot, result, direction) {
-        this.path.push({
-            result,
-            image: snapshot,
-            decision: direction
-        });
+        if (this.path.length < 100) {
+            this.path.push({
+                result,
+                image: snapshot,
+                decision: direction
+            });
+        }
     }
 
     _gameOver() {

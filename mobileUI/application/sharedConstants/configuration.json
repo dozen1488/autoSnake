@@ -1,6 +1,6 @@
 {
-    "x": 20,
-    "y": 20,
+    "x": 10,
+    "y": 10,
     "radiusOfVisionForNetwork": 1,
     "impulseFrequency": 1000
 }
