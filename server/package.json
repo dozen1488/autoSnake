@@ -1,25 +1,27 @@
 {
-    "name": "neural-snake-server",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "start": "node ./server.js",
-        "start-server": "./server.js"
-    },
-    "author": "Dmitry",
-    "license": "MIT",
-    "dependencies": {
-        "body-parser": "^1.18.2",
-        "express": "^4.16.2",
-        "lodash": "^4.17.4",
-        "synaptic": "^1.1.4"
-    },
-    "devDependencies": {
-        "babel-eslint": "^7.2.3",
-        "eslint": "^3.19.0",
-        "eslint-plugin-import": "^2.8.0",
-        "eslint-plugin-jasmine": "^2.9.1",
-        "eslint-plugin-react": "^7.5.1"
-    }
+  "name": "neural-snake-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "start-server": "./server.js"
+  },
+  "author": "Dmitry",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "lodash": "^4.17.4",
+    "mongodb": "^3.0.1",
+    "synaptic": "^1.1.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^3.19.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jasmine": "^2.9.1",
+    "eslint-plugin-react": "^7.5.1"
+  }
 }
