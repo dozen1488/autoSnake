@@ -1,57 +1,54 @@
 #!/usr/bin/env node
 
-const PORT = 3002;
-const IMAGES_FILE_NAME = "./images.json";
-
+const getConnection = require("./dataAccessLayer/getConnection");
 const express = require("express");
 const bodyParser = require("body-parser");
-const fs = require("fs");
-const _ = require("lodash");
 
+const ImagesCollection = require("./dataAccessLayer/imagesCollection");
 const networkTrainer = require("./networkTrainer");
-
 const app = express();
 
-const trainingImages = readImages();
+const PORT = 3002;
+const url = "mongodb://localhost:27017";
+const dbName = "test";
+let databaseConnection = null;
 
-app.use(express.static("./server-static"));
-app.use(bodyParser.json());
-app.listen(PORT);
 
-app.get("/getNetwork", (req, res) => {
-    const network = networkTrainer(trainingImages);
-    res
-        .status(200)
-        .send(JSON.stringify(network));
-});
-
-app.post("/applyImages", (req, res) => {
-    trainingImages.push.apply(trainingImages, req.body);
-    res
-        .status(200)
-        .end();
-});
-
-console.log("Server is listening on port " + PORT);
-console.log("PID is " + process.pid);
-
-process
-    .on("SIGINT", () => {
-        saveImages(trainingImages);
-    })
-    .on("SIGTERM", () => {
-        saveImages(trainingImages);
-    });
-
-function readImages() {
-    try {
-        return _.uniqWith(JSON.parse(fs.readFileSync(IMAGES_FILE_NAME)), _.isEqual);
-    } catch (ex) {
-        return [];
+function endProgram() {
+    if (databaseConnection) {
+        databaseConnection.close();
     }
-}
-
-function saveImages(images) {
-    fs.writeFileSync(IMAGES_FILE_NAME, JSON.stringify(_.uniqWith(images, _.isEqual), null, "\t"));
     process.exit(0);
 }
+
+(async () => {
+    app.use(express.static("./server-static"));
+    app.use(bodyParser.json());
+    app.listen(PORT);
+
+    databaseConnection = await getConnection(url, dbName);
+    const collection = new ImagesCollection({ databaseConnection });
+    const trainingImages = await collection.getImages();
+
+    app.get("/getNetwork", (req, res) => {
+        const network = networkTrainer(trainingImages);
+        res
+            .status(200)
+            .send(JSON.stringify(network));
+    });
+
+    app.post("/applyImages", (req, res) => {
+        trainingImages.pushImages(req.body);
+        res
+            .status(200)
+            .end();
+    });
+    // eslint-disable-next-line no-console
+    console.log("Server is listening on port " + PORT);
+    // eslint-disable-next-line no-console
+    console.log("PID is " + process.pid);
+
+    process
+        .on("SIGINT", endProgram)
+        .on("SIGTERM", endProgram);
+})();
