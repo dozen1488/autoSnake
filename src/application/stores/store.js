@@ -15,13 +15,12 @@ const rootReducer = combineReducers({
     mouseState: mouseReducer
 });
 
-const sagaMiddleware = createSagaMiddleware();
+export const sagaMiddleware = createSagaMiddleware();
 
-const SingletonStore = createStore(
+export const Store = createStore(
     rootReducer,
     applyMiddleware(sagaMiddleware)
 );
 
-sagaMiddleware.run(initScript, SingletonStore.dispatch.bind(SingletonStore));
+sagaMiddleware.run(initScript, Store.dispatch.bind(Store));
 
-export default SingletonStore;

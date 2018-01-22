@@ -1,37 +1,61 @@
 const { Layer, Network } = require("synaptic");
 const _ = require("lodash");
 
-function trainNetwork(images = require("./images.json")) {
-    const myNetwork = generateNetwork(1);
+const learningConfiguration = {
+    learningRate: 0.1,
+    epochMaxNumber: 2000,
+    maxIterationNumber: 5000,
+    radiusOfVision: 1
+};
 
-    const learningRate = 0.1;
-    let img = 0;
-    let tryNumber = 20;
+function trainNetwork(
+    images = [], {
+        maxIterationNumber,
+        radiusOfVision,
+        learningRate,
+        epochMaxNumber
+    } = learningConfiguration
+) {
+    const myNetwork = generateNetwork(radiusOfVision);
+
+    let epochNumber = 0;
     do {
-        for (let i = 0; i < 5000; i++) {
-            let networkDecision = myNetwork.activate(images[img].image);
-            switch (images[img].result) {
+        for (let i = 0, border = (maxIterationNumber > images.length)
+            ? images.length : maxIterationNumber;
+            i < border;
+            i++
+        ) {
+            if (!images[i]) continue;
+            const { image, result, decision } = images[i];
+            if (
+                _.isUndefined(image) ||
+                _.isUndefined(result) ||
+                _.isUndefined(decision)
+            )
+                continue;
+            let networkDecision = myNetwork.activate(image);
+            switch (result) {
                 //  Result was wrong
                 case -1:
                     //  Rise all inputs, except decision
                     networkDecision = [1, 1, 1];
-                    networkDecision[images[img].decision + 1] = 0;
+                    networkDecision[decision + 1] = 0;
                     break;
                 // Result was right
                 case 1:
                     //  Rise input, equals to decision
                     networkDecision = [0, 0, 0];
-                    networkDecision[images[img].decision + 1] = 1;
+                    networkDecision[decision + 1] = 1;
                     break;
             }
-            myNetwork.propagate(learningRate, networkDecision);
 
-            if (++img >= images.length) {
-                img = 0;
-            }
+            myNetwork.propagate(learningRate, networkDecision);
         }
-    } while (checkDesitions(images, myNetwork) && tryNumber-- !== 0);
-    if (tryNumber === 0) {
+    } while (
+        !checkDecisions(images, myNetwork) &&
+        epochNumber++ <= epochMaxNumber
+    );
+    if (!checkDecisions(images, myNetwork)) {
         console.log("Network untrainable");
     }
 
@@ -56,7 +80,7 @@ function generateNetwork(n) {
 
 module.exports = trainNetwork;
 
-function checkDesitions(images, network) {
+function checkDecisions(images, network) {
     const results = images.map(image => {
         const decision = getTurn(image.image, network);
         switch (image.result) {
@@ -69,7 +93,8 @@ function checkDesitions(images, network) {
         return true;
     });
 
-    return _.reduce(results, (res, val) => {
+    // 1 - decision are right, 0 - some are wrong
+    return !_.reduce(results, (res, val) => {
         return res + !val;
     }, 0);
 }

@@ -1,7 +1,8 @@
 import ActionTypes from "./actionTypes";
 import MouseCLicks from "../sharedConstants/MouseClickMeaning.json";
 
-import Store from "../stores/store";
+import initScript from "../sagas/initScript";
+import { Store, sagaMiddleware } from "../stores/store";
 import Requester from "../managers/requester";
 import { impulseFrequency } from "../sharedConstants/configuration.json";
 import GameManager from "../managers/gameManager";
@@ -75,6 +76,10 @@ export function initStore(x, y, radiusOfVisionForNetwork) {
     };
 }
 
+export function getNetwork(radiusOfVisionForNetwork) {
+    sagaMiddleware.run(initScript, Store.dispatch.bind(Store), radiusOfVisionForNetwork);
+}
+
 export function networkReady(network) {
 
     const { x, y, radiusOfVisionForNetwork } = Store
@@ -82,6 +87,9 @@ export function networkReady(network) {
         .get("boardState")
         .toJS();
 
+    if (gameManager) {
+        gameManager.pauseImpulsing();
+    }
     gameManager = new GameManager(
         (...args) => Store.dispatch(changeBoard(...args)),
         (...args) => Store.dispatch(gameOver(...args)),

@@ -4,9 +4,9 @@ import "./index.css";
 import React from "react";
 import ReactDOM from "react-dom";
 
-import store from "./stores/store";
+import { Store } from "./stores/store";
 import BoardComponent from "./components/board";
 
 ReactDOM.render(<BoardComponent
-    store={store}
+    store={Store}
 />, document.getElementById("Application"));

@@ -1,0 +1,9 @@
+.button {
+    border: 4px #2e303f solid;
+    border-radius: 2%; 
+    padding: 2.5%;
+    background-color: #5a5e7f;
+    margin: auto;
+    margin-top: 2.5%;
+    color: cornsilk;
+}

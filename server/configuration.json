@@ -1,0 +1,7 @@
+{
+    "PORT": 3002,
+    "URL": "mongodb://localhost:27017",
+    "DB_NAME": "images",
+    "defaultRadiusOfVision": "1",
+    "collectionName": "images"
+}

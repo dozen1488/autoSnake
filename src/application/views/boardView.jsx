@@ -53,7 +53,7 @@ RenderBoard.propTypes = {
 export default function render({ board, actions }) {
     return (
         <div id="root-container">
-            <RenderReadme/>
+            <RenderReadme actions={actions}/>
             <RenderBoard
                 board={board}
                 actions={actions}

@@ -17,9 +17,7 @@ export default function reduceBoardState(state = Map({}), action) {
             return processBoardChange(state, action);
         case ActionTypes.networkReady:
 
-            return fromJS({
-                board: action.board
-            });
+            return state.set("board", fromJS(action.board));
         default:
             return state;
     }

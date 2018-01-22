@@ -1,13 +1,15 @@
 const Promise = require("bluebird");
 const _ = require("lodash");
 
-const collectionName = "images";
+const config = require("../configuration.json");
 
 class ImagesCollection {
     constructor({
-        databaseConnection
+        databaseConnection,
+        radiusOfVision
     }) {
-        this.collection = databaseConnection.collection(collectionName);
+        this.collection = databaseConnection
+            .collection(`${config.collectionName}${radiusOfVision}`);
     }
 
     async getImages() {
@@ -26,6 +28,8 @@ class ImagesCollection {
 
     async pushImages(images) {
         try {
+            images = _.uniqWith(images, _.isEqual)
+                .filter(({ result }) => result != 0);
             const request = this.collection;
             const result = await Promise
                 .promisify(

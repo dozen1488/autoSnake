@@ -17,7 +17,7 @@ class KeyboardListener {
     }
 
     stopListening() {
-        document.removeEventListener(this._listener);
+        document.removeEventListener("keydown", this._listener);
     }
 
 }
