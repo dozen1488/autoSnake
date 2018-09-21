@@ -15,8 +15,9 @@ Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/xenial64"
     config.vm.provision "shell", path: "vagrant/nodeInstallScript.sh"
     config.vm.provision "shell", inline: 
-        "/vagrant/server/server.js &
-        npm run prod --prefix /vagrant/srcr"
+        "npm run prod --prefix /vagrant/srcr
+        npm run start --prefix /vagrant/server"
+    config.vm.network :forwarded_port, guest: 3002, host: 4000
     # Disable automatic box update checking. If you disable this, then
     # boxes will only be checked for updates when the user runs
     # `vagrant box outdated`. This is not recommended.
