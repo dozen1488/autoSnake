@@ -4,12 +4,19 @@ import rotateMatrix from "rotate-matrix";
 import { Snake, DIRECTIONS } from "./snakeModel";
 import SellsMeaning from "./sellsConstants.json";
 import ErrorConstants from "./errorConstants.json";
+import {
+    sizeOfX as defaultSizeOfX,
+    sizeOfY as defaultSizeOfY,
+    radiusOfVisionForNetwork as defaultRadiusOfVisionForNetwork
+} from "../config.json";
+
+const BackWeight = 0.9;
 
 class BoardModel {
 
     constructor(
-        { sizeOfX = 2, sizeOfY = 2 }, //    Size
-        { network, radiusOfVisionForNetwork = 1 } //  Network settings
+        { sizeOfX = defaultSizeOfX, sizeOfY = defaultSizeOfY }, //    Size
+        { network, radiusOfVisionForNetwork = defaultRadiusOfVisionForNetwork } //  Network settings
     ) {
         if (sizeOfX < 2 || sizeOfY < 2) {
             throw new Error(ErrorConstants.TOO_SMALL_BOARD);
@@ -48,7 +55,7 @@ class BoardModel {
 
         return { x, y };
     }
-    
+
     updateState() {
         const boardSnap = this._snapshotBoardAroundSnake(
             this.radiusOfVisionForNetwork,
@@ -89,7 +96,7 @@ class BoardModel {
         } else {
             this._saveSnapshotForNetwork(boardSnap, 0, turn);
         }
-        
+
         return {
             isGameOver: false,
             changedSquares: [lastHead, lastTail, newHead, newTail]
@@ -99,7 +106,7 @@ class BoardModel {
     get isGameOver() {
         return !!this._isGameOver;
     }
-    
+
     _printSnakeTail() {
         this.snake.tail.forEach(
             ({ x, y }, index) => {
@@ -159,12 +166,23 @@ class BoardModel {
         });
     }
 
+    _processImages() {
+        const snakePath = this.path;
+        snakePath.forEach((image, index, array) => {
+            if (((index - 1) > 0) && array[index - 1]) {
+                array[index - 1].result = BackWeight * image.result;
+            }
+        });
+
+        return snakePath;
+    }
+
     _gameOver() {
         this._isGameOver = true;
 
         return {
             isGameOver: true,
-            images: this.path
+            images: this._processImages()
         };
     }
 

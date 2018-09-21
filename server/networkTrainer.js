@@ -1,57 +1,52 @@
 const { Layer, Network } = require("synaptic");
 const _ = require("lodash");
+const { radiusOfVisionForNetwork } = require("../config.json");
+const generateNetwork = require("../crossPlatformModels/generateNetwork");
+
+let network = null;
 
 function trainNetwork(images = require("./images.json")) {
-    const myNetwork = generateNetwork(1);
-    
+    const myNetwork = network || generateNetwork(
+        radiusOfVisionForNetwork,
+        radiusOfVisionForNetwork
+    );
+
     const learningRate = 0.1;
     let img = 0;
     let tryNumber = 20;
-    do {
-        for (let i = 0; i < 5000; i++) {
-            let networkDecision = myNetwork.activate(images[img].image);
-            switch (images[img].result) {
-                //  Result was wrong
-                case -1:
+    if (images.length > 0) {
+        do {
+            for (let i = 0; i < 5000; i++) {
+                let networkDecision = myNetwork.activate(images[img].image);
+                const result = images[img].result;
+                if (result < 0) {
+                    //  Result was wrong
                     networkDecision = [1, 1, 1];
                     networkDecision[images[img].decision + 1] = 0;
                     //  Rise all inputs, except decision
                     break;
-                // Result was right
-                case 1:
+                } else if (result > 0) {
+                    // Result was right
                     networkDecision = [0, 0, 0];
                     networkDecision[images[img].decision + 1] = 1;
                     //  Rise input, equals to decision
                     break;
+                }
+                myNetwork.propagate(learningRate, networkDecision);
+
+                if (++img >= images.length) {
+                    img = 0;
+                }
             }
-            myNetwork.propagate(learningRate, networkDecision);
-        
-            if (++img >= images.length) {
-                img = 0;
-            }
+        } while (checkDesitions(images, myNetwork) && --tryNumber !== 0);
+        if (tryNumber === 0) {
+            console.log("Network untrainable");
         }
-    } while (checkDesitions(images, myNetwork) && tryNumber-- !== 0);
-    if (tryNumber === 0) {
-        console.log("Network untrainable");
     }
-    
+
+    network = myNetwork;
+
     return myNetwork.toJSON();
-}
-
-function generateNetwork(n) {
-    const size = (n * 2 + 1) * (n * 2 + 1);
-    const inputLayer = new Layer(size);
-    const hiddenLayer = new Layer(size);
-    const outputLayer = new Layer(3);
-
-    inputLayer.project(hiddenLayer);
-    hiddenLayer.project(outputLayer);
-
-    return new Network({
-        input: inputLayer,
-        hidden: [hiddenLayer],
-        output: outputLayer
-    });
 }
 
 module.exports = trainNetwork;
@@ -59,11 +54,11 @@ module.exports = trainNetwork;
 function checkDesitions(images, network) {
     const results = images.map(image => {
         const decision = getTurn(image.image, network);
-        switch (image.result) {
-            case -1:
-                return decision !== image.decision;
-            case 1:
-                return decision === image.decision;
+        const result = image.result;
+        if (result < 0) {
+            return decision !== image.decision;
+        } else if (result > 0) {
+            return decision === image.decision;
         }
 
         return true;

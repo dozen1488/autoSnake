@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { Network } from "synaptic";
 import generateNetwork from "./generateNetwork";
+import { radiusOfVisionForNetwork } from "../config.json";
 
 export class Snake {
     constructor(startPoint, networkJSON) {
@@ -9,7 +10,7 @@ export class Snake {
         this._tail.push(startPoint);
         this._network = (networkJSON)
             ? Network.fromJSON(networkJSON)
-            : generateNetwork(1);
+            : generateNetwork(radiusOfVisionForNetwork, radiusOfVisionForNetwork);
     }
 
     get tail() {
@@ -47,7 +48,7 @@ export class Snake {
 
         //  push to start of array
         this._tail.unshift(newHead);
-        
+
         if (!withIncrement) {
             this._tail.pop();
         }

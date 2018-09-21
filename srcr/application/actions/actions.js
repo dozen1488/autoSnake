@@ -49,7 +49,7 @@ export function onHover(x, y) {
         isMouseWallClicked,
         isMouseFoodClicked
     } = Store.getState().toJS();
-    
+
     if (isMouseWallClicked) {
         changedSquares = [gameManager.appendWall(x, y)];
     } else if (isMouseFoodClicked) {

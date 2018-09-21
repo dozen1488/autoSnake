@@ -5,7 +5,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import BoardComponent from "./components/board";
-import { x, y, radiusOfVisionForNetwork } from "./sharedConstants/configuration.json";
+import { x, y } from "./sharedConstants/configuration.json";
+import { radiusOfVisionForNetwork } from "../../config.json";
 
 ReactDOM.render(<BoardComponent
     x={x}

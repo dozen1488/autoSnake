@@ -1,0 +1,6 @@
+{
+    "sizeOfX": 2,
+    "sizeOfY": 2,
+    "radiusOfVisionForNetwork": 1,
+    "BackWeight": 0.9
+}

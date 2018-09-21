@@ -12,7 +12,7 @@ const networkTrainer = require("./networkTrainer");
 
 const app = express();
 
-const trainingImages = readImages();
+let trainingImages = readImages();
 
 app.use(express.static("./server-static"));
 app.use(bodyParser.json());
@@ -26,7 +26,7 @@ app.get("/getNetwork", (req, res) => {
 });
 
 app.post("/applyImages", (req, res) => {
-    trainingImages.push.apply(trainingImages, req.body);
+    trainingImages = req.body;
     res
         .status(200)
         .end();
