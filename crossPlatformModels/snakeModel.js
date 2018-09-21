@@ -90,13 +90,13 @@ class Direction {
     get direction() {
         return this._dir;
     }
-    
+
     left() {
         this._dir--;
         if (this._dir < 0) {
             this._dir = this._maxDIr;
         }
-        
+
         return this;
     }
 

@@ -2,7 +2,9 @@
 
 const PORT = 3002;
 const IMAGES_FILE_NAME = "./images.json";
+const NETWORK_FILE_NAME = "./network.json";
 
+const { Network } = require("synaptic");
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
@@ -12,21 +14,21 @@ const networkTrainer = require("./networkTrainer");
 
 const app = express();
 
-let trainingImages = readImages();
+let network = readNetwork() || networkTrainer(null, []);
 
 app.use(express.static("./server-static"));
 app.use(bodyParser.json());
 app.listen(PORT);
 
 app.get("/getNetwork", (req, res) => {
-    const network = networkTrainer(trainingImages);
     res
         .status(200)
-        .send(JSON.stringify(network));
+        .send(JSON.stringify(network.toJSON()));
 });
 
 app.post("/applyImages", (req, res) => {
-    trainingImages = req.body;
+    let trainingImages = req.body;
+    network = networkTrainer(network, trainingImages);
     res
         .status(200)
         .end();
@@ -37,10 +39,10 @@ console.log("PID is " + process.pid);
 
 process
     .on("SIGINT", () => {
-        saveImages(trainingImages);
+        saveNetwork(network.toJSON());
     })
     .on("SIGTERM", () => {
-        saveImages(trainingImages);
+        saveNetwork(network.toJSON());
     });
 
 function readImages() {
@@ -49,6 +51,19 @@ function readImages() {
     } catch (ex) {
         return [];
     }
+}
+
+function readNetwork() {
+    try {
+        return Network.fromJSON(fs.readFileSync(NETWORK_FILE_NAME));
+    } catch (ex) {
+        return null;
+    }
+}
+
+function saveNetwork(network) {
+    fs.writeFileSync(NETWORK_FILE_NAME, JSON.stringify(network, null, "\t"));
+    process.exit(0);
 }
 
 function saveImages(images) {

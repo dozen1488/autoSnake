@@ -1,11 +1,8 @@
-const { Layer, Network } = require("synaptic");
 const _ = require("lodash");
 const { radiusOfVisionForNetwork } = require("../config.json");
 const generateNetwork = require("../crossPlatformModels/generateNetwork");
 
-let network = null;
-
-function trainNetwork(images = require("./images.json")) {
+function trainNetwork(network, images = require("./images.json")) {
     const myNetwork = network || generateNetwork(
         radiusOfVisionForNetwork,
         radiusOfVisionForNetwork
@@ -16,7 +13,7 @@ function trainNetwork(images = require("./images.json")) {
     let tryNumber = 20;
     if (images.length > 0) {
         do {
-            for (let i = 0; i < 5000; i++) {
+            for (let i = 0; i < 2000; i++) {
                 let networkDecision = myNetwork.activate(images[img].image);
                 const result = images[img].result;
                 if (result < 0) {
@@ -24,13 +21,11 @@ function trainNetwork(images = require("./images.json")) {
                     networkDecision = [1, 1, 1];
                     networkDecision[images[img].decision + 1] = 0;
                     //  Rise all inputs, except decision
-                    break;
                 } else if (result > 0) {
                     // Result was right
                     networkDecision = [0, 0, 0];
                     networkDecision[images[img].decision + 1] = 1;
                     //  Rise input, equals to decision
-                    break;
                 }
                 myNetwork.propagate(learningRate, networkDecision);
 
@@ -44,9 +39,7 @@ function trainNetwork(images = require("./images.json")) {
         }
     }
 
-    network = myNetwork;
-
-    return myNetwork.toJSON();
+    return myNetwork;
 }
 
 module.exports = trainNetwork;
