@@ -7,10 +7,9 @@ import ErrorConstants from "./errorConstants.json";
 import {
     sizeOfX as defaultSizeOfX,
     sizeOfY as defaultSizeOfY,
-    radiusOfVisionForNetwork as defaultRadiusOfVisionForNetwork
+    radiusOfVisionForNetwork as defaultRadiusOfVisionForNetwork,
+    BackWeight as BackWeight
 } from "../config.json";
-
-const BackWeight = 0.9;
 
 class BoardModel {
 

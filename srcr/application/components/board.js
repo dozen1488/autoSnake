@@ -20,7 +20,7 @@ export default class Board extends React.Component {
             this.props.y,
             this.props.radiusOfVisionForNetwork
         );
-        
+
         Requester.receiveNetwork(actions.networkReady);
 
         this.squareUpdateFunctions = new Array(this.props.x)
