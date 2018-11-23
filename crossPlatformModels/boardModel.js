@@ -1,8 +1,7 @@
 import _ from "lodash";
-import rotateMatrix from "rotate-matrix";
 
 import { ACTION_FAILED, ACTION_NEUTRAL, ACTION_SUCCESS } from './constants';
-import { Snake, DIRECTIONS } from "./snakeModel";
+import { Snake } from "./snakeModel";
 import SellsMeaning from "./sellsConstants.json";
 import ErrorConstants from "./errorConstants.json";
 import {
@@ -44,6 +43,7 @@ class BoardModel {
         this.path = [];
         this.didSnakeEatLustTurn = false;
     }
+
     appendWall(x, y) {
         this.board[x][y] = SellsMeaning.Wall;
 

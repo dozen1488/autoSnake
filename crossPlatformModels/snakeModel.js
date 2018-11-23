@@ -34,7 +34,7 @@ export class Snake {
     }
 
     move(withIncrement, environment) {
-        const turn = this._getTurn(environment);
+        const turn = this._getTurn(environment, withIncrement);
         switch (turn) {
             case TURNS.LEFT:
                 this._direction.left();
@@ -66,9 +66,9 @@ export class Snake {
         return { head: newHead, turn };
     }
 
-    _getTurn(image) {
+    _getTurn(image, withIncrement) {
         const networkAnswer = this.qLearner.makeDecision(image);
-
+        this.qLearner.saveTransaction(image, networkAnswer, withIncrement);
         //  Find an index of the most value in array
         const { index: resultIndex } = networkAnswer.reduce(
             ({ index, maxValue }, currValue, currIndex) => {
