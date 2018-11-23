@@ -5,7 +5,7 @@ function generateNetwork(n, m) {
 
     const inputLayer = new Layer(size);
     const hiddenLayer = new Layer(size);
-    const outputLayer = new Layer(3);
+    const outputLayer = new Layer(4);
 
     inputLayer.project(hiddenLayer);
     hiddenLayer.project(outputLayer);

@@ -1,6 +1,7 @@
 import _ from "lodash";
 import rotateMatrix from "rotate-matrix";
 
+import { ACTION_FAILED, ACTION_NEUTRAL, ACTION_SUCCESS } from './constants';
 import { Snake, DIRECTIONS } from "./snakeModel";
 import SellsMeaning from "./sellsConstants.json";
 import ErrorConstants from "./errorConstants.json";
@@ -81,7 +82,7 @@ class BoardModel {
         );
 
         if (gameOverCondition) {
-            this._saveSnapshotForNetwork(boardSnap, -1, turn);
+            this._saveSnapshotForNetwork(boardSnap, ACTION_FAILED, turn);
 
             return this._gameOver();
         }
@@ -91,9 +92,9 @@ class BoardModel {
         this._printSnakeTail();
 
         if (this.didSnakeEatLustTurn) {
-            this._saveSnapshotForNetwork(boardSnap, 1, turn);
+            this._saveSnapshotForNetwork(boardSnap, ACTION_NEUTRAL, turn);
         } else {
-            this._saveSnapshotForNetwork(boardSnap, 0, turn);
+            this._saveSnapshotForNetwork(boardSnap, ACTION_SUCCESS, turn);
         }
 
         return {
@@ -116,7 +117,7 @@ class BoardModel {
         );
     }
 
-    _snapshotBoardAroundSnake(snapshotRadius, snakeDirection) {
+    _snapshotBoardAroundSnake(snapshotRadius) {
         let image = new Array((snapshotRadius * 2 + 1))
             .fill(0)
             .map(() => new Array((snapshotRadius * 2 + 1)).fill(0));
@@ -138,20 +139,6 @@ class BoardModel {
                     image[inX][inY] = 0;
                 }
             }
-        }
-
-        switch (snakeDirection) {
-            case DIRECTIONS.LEFT:
-            break;
-            case DIRECTIONS.RIGHT:
-                image = rotateMatrix(image, 2);
-            break;
-            case DIRECTIONS.UP:
-                image = rotateMatrix(image, 3);
-            break;
-            case DIRECTIONS.DOWN:
-                image = rotateMatrix(image);
-            break;
         }
 
         return _.flatten(image);
@@ -181,7 +168,7 @@ class BoardModel {
 
         return {
             isGameOver: true,
-            images: this._processImages()
+            images: this.path
         };
     }
 
