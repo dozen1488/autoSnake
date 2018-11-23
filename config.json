@@ -2,5 +2,6 @@
     "sizeOfX": 2,
     "sizeOfY": 2,
     "radiusOfVisionForNetwork": 3,
-    "BackWeight": 0.5
+    "BackWeight": 0.5,
+    "FramesNumber": 2
 }

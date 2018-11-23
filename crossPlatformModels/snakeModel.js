@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { Network } from "synaptic";
 import generateNetwork from "./generateNetwork";
-import { radiusOfVisionForNetwork } from "../config.json";
+import { radiusOfVisionForNetwork, FramesNumber } from "../config.json";
 import { QLearner } from "./qLearningClass";
 import { Direction, TURNS } from "./direction";
 
@@ -13,7 +13,12 @@ export class Snake {
         this.qLearner = new QLearner(
             (networkJSON)
                 ? Network.fromJSON(networkJSON)
-                : generateNetwork(radiusOfVisionForNetwork, radiusOfVisionForNetwork)
+                : generateNetwork(
+                    radiusOfVisionForNetwork,
+                    radiusOfVisionForNetwork,
+                    FramesNumber,
+                    Object.keys(TURNS).length
+                )
         );
     }
 
@@ -69,24 +74,7 @@ export class Snake {
     _getTurn(image, withIncrement) {
         const networkAnswer = this.qLearner.makeDecision(image);
         this.qLearner.saveTransaction(image, networkAnswer, withIncrement);
-        //  Find an index of the most value in array
-        const { index: resultIndex } = networkAnswer.reduce(
-            ({ index, maxValue }, currValue, currIndex) => {
-                if (currValue >= maxValue) {
-                    return {
-                        index: currIndex,
-                        maxValue: currValue
-                    };
-                } else {
-                    return { index, maxValue };
-                }
-            }, {
-                index: -1,
-                maxValue: -Infinity
-            }
-        );
 
-        //  Map value to turn
-        return resultIndex - 1;
+        return networkAnswer;
     }
 }
