@@ -1,7 +1,5 @@
 import _ from "lodash";
-import { Network } from "synaptic";
-import generateNetwork from "./generateNetwork";
-import { radiusOfVisionForNetwork, FramesNumber } from "../config.json";
+
 import { QLearner } from "./qLearningClass";
 import { Direction, TURNS } from "./direction";
 
@@ -10,16 +8,7 @@ export class Snake {
         this._direction = new Direction();
         this._tail = [];
         this._tail.push(startPoint);
-        this.qLearner = new QLearner(
-            (networkJSON)
-                ? Network.fromJSON(networkJSON)
-                : generateNetwork(
-                    radiusOfVisionForNetwork,
-                    radiusOfVisionForNetwork,
-                    FramesNumber,
-                    Object.keys(TURNS).length
-                )
-        );
+        this.qLearner = new QLearner(networkJSON );
     }
 
     get tail() {

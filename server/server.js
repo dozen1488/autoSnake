@@ -9,13 +9,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const _ = require("lodash");
+const { QLearner } = require('../crossPlatformModels/dist/qLearningClass');
 
 const networkTrainer = require("./networkTrainer");
 const mergeImages = require("./mergeImages");
 const app = express();
 
-let network = readNetwork() || networkTrainer(null, []);
-let trainingImages = readImages();
+const qLearner = new QLearner();
 
 app.use(express.static("./server-static"));
 app.use(bodyParser.json());
@@ -24,7 +24,7 @@ app.listen(PORT);
 app.get("/getNetwork", (req, res) => {
     res
         .status(200)
-        .send(JSON.stringify(network.toJSON()));
+        .send(JSON.stringify(qLearner.network.toJSON()));
 });
 
 app.post("/applyImages", (req, res) => {

@@ -1,4 +1,4 @@
-{
+export default {
     "Empty": 0,
     "Wall": 1,
     "Food": 2,

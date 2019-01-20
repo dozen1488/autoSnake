@@ -11,6 +11,7 @@
             "name": "server",
             "program": "${workspaceFolder}/server/server.js",
             "cwd": "${workspaceFolder}/server",
+            "sourceMaps": true,
             "env": {
                 "DEBUG": "express:*"
             }

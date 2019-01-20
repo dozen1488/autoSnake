@@ -1,37 +1,11 @@
 const _ = require("lodash");
-const { radiusOfVisionForNetwork } = require("../config.json");
-const generateNetwork = require("../crossPlatformModels/generateNetwork");
+const { QLearner } = require('../crossPlatformModels/dist/qLearningClass');
 
-function trainNetwork(network, images = require("./images.json")) {
-    const myNetwork = network || generateNetwork(
-        radiusOfVisionForNetwork,
-        radiusOfVisionForNetwork
-    );
+function trainNetwork(qLearnerJSON) {
+    const qLearner = QLearner.deserialize(qLearnerJSON);
+    qLearner.adjustNetwork();
 
-    const learningRate = 0.1;
-    let img = 0;
-    let tryNumber = 20;
-    if (images.length > 0) {
-        do {
-            for (let i = 0; i < 2000; i++) {
-                let networkDecision = myNetwork.activate(images[img].image);
-                const result = images[img].result;
-
-                networkDecision[images[img].decision + 1] = (result + 1) / 2;
-
-                myNetwork.propagate(learningRate, networkDecision);
-
-                if (++img >= images.length) {
-                    img = 0;
-                }
-            }
-        } while (!isValidDesitions(images, myNetwork) && --tryNumber !== 0);
-        if (tryNumber === 0) {
-            console.log("Network untrainable");
-        }
-    }
-
-    return myNetwork;
+    return qLearner.network;
 }
 
 module.exports = trainNetwork;

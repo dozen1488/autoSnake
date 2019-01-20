@@ -2,14 +2,14 @@ import _ from "lodash";
 
 import { ACTION_FAILED, ACTION_NEUTRAL, ACTION_SUCCESS } from './constants';
 import { Snake } from "./snakeModel";
-import SellsMeaning from "./sellsConstants.json";
-import ErrorConstants from "./errorConstants.json";
+import SellsMeaning from "./sellsConstants";
+import ErrorConstants from "./errorConstants";
 import {
     sizeOfX as defaultSizeOfX,
     sizeOfY as defaultSizeOfY,
     radiusOfVisionForNetwork as defaultRadiusOfVisionForNetwork,
     BackWeight as BackWeight
-} from "../config.json";
+} from "../../config";
 
 class BoardModel {
 
@@ -168,7 +168,7 @@ class BoardModel {
 
         return {
             isGameOver: true,
-            images: this.path
+            images: this.snake.qLearner.serialize()
         };
     }
 

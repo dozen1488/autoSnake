@@ -1,3 +1,3 @@
-{
+export default {
     "TOO_SMALL_BOARD": "Board can't be less than 2 squares"
 }

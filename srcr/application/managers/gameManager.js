@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { BoardModel } from "../../../crossPlatformModels/boardModel";
+import { BoardModel } from "../../../crossPlatformModels/dist/boardModel";
 import { Impulser } from "./externalManagers";
 
 class GameManager {

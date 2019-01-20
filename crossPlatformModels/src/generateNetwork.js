@@ -17,4 +17,4 @@ function generateNetwork(n, m, framesNumber, actionNumber) {
     });
 }
 
-module.exports = generateNetwork;
+module.exports = { generateNetwork };
