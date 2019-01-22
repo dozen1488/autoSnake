@@ -5,7 +5,7 @@
     "main": "boardModel.js",
     "scripts": {
         "test": "test",
-        "build:watch": "./node_modules/.bin/tsc --watch"
+        "watch:ts": "./node_modules/.bin/tsc --watch"
     },
     "author": "Dmitry",
     "license": "MIT",

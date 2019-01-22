@@ -9,7 +9,7 @@ export class Direction {
     }
 
     up() {
-        if (!this._dir === DIRECTIONS.DOWN) {
+        if (this._dir !== DIRECTIONS.DOWN) {
             this._dir = DIRECTIONS.UP;
         }
 
@@ -17,7 +17,7 @@ export class Direction {
     }
 
     down() {
-        if (!this._dir === DIRECTIONS.UP) {
+        if (this._dir !== DIRECTIONS.UP) {
             this._dir = DIRECTIONS.DOWN;
         }
 
@@ -25,7 +25,7 @@ export class Direction {
     }
 
     left() {
-        if (!this._dir === DIRECTIONS.RIGHT) {
+        if (this._dir !== DIRECTIONS.RIGHT) {
             this._dir = DIRECTIONS.LEFT;
         }
 
@@ -33,7 +33,7 @@ export class Direction {
     }
 
     right() {
-        if (!this._dir === DIRECTIONS.LEFT) {
+        if (this._dir !== DIRECTIONS.LEFT) {
             this._dir = DIRECTIONS.RIGHT;
         }
 

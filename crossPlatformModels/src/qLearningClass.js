@@ -28,7 +28,7 @@ export class QLearner {
             );
         this.historyTransaction = historyTransaction;
         this.network = networkObject;
-        this.actionCache = null;
+        this.actionCache = 0;
     }
 
     get lastTransaction() {
@@ -76,25 +76,33 @@ export class QLearner {
     }
 
     makeDecision(image) {
-        const { index: resultIndex } = QLearner.getActionCases().reduce(
-            ({ index, maxValue }, currentInputs, currIndex) => {
-                const input = [...currentInputs, ...image, ((this.lastTransaction && this.lastTransaction.secondFrame) || image)];
-                const valueFunction = this.network.activate(input);
-                if (valueFunction >= maxValue) {
-                    return {
-                        index: currIndex,
-                        maxValue: valueFunction
-                    };
-                } else {
-                    return { index, maxValue };
+        if (random(0, 100) > 0) {
+            const { index: resultIndex } = QLearner.getActionCases().reduce(
+                ({ index, maxValue }, currentInputs, currIndex) => {
+                    const input = [
+                        ...currentInputs,
+                        ...image,
+                        ...((this.lastTransaction && this.lastTransaction.secondFrame) || image)
+                    ];
+                    const [valueFunction] = this.network.activate(input);
+                    if (valueFunction >= maxValue) {
+                        return {
+                            index: currIndex,
+                            maxValue: valueFunction
+                        };
+                    } else {
+                        return { index, maxValue };
+                    }
+                }, {
+                    index: -1,
+                    maxValue: -Infinity
                 }
-            }, {
-                index: -1,
-                maxValue: -Infinity
-            }
-        );
+            );
 
-        return resultIndex;
+            return resultIndex;
+        } else {
+            return random(0, QLearner.getActionCases().length);
+        }
     }
 
     serialize() {
@@ -110,21 +118,20 @@ export class QLearner {
         }
 
         const historyTransaction = plainJSON.historyTransaction.map(
-            (plainTransaction, index, array) => {
-                const nextTransaction = (index < array.length - 1)
-                    ? Transaction.deserialize(array[index + 1])
-                    : null;
-
-                return Transaction.deserialize(plainTransaction, nextTransaction);
-            }
+            (plainTransaction) => Transaction.deserialize(plainTransaction)
         );
+
+        for (let index = 0; index < historyTransaction.length - 1; index++) {
+            historyTransaction[index].nextState = historyTransaction[index + 1];
+        }
 
         return new QLearner(plainJSON.network, historyTransaction);
     }
 
     adjustNetwork() {
         if (this.historyTransaction.length > 0) {
-            const sampleStart = this.historyTransaction[random(0, this.historyTransaction.length - 1)];
+            const sampleStart = this.historyTransaction[0];
+            // const sampleStart = this.historyTransaction[random(0, this.historyTransaction.length - 1)];
             let currentSample = sampleStart;
             while (currentSample) {
                 const inputs = QLearner.getNetworkInputs(currentSample.action);
@@ -132,14 +139,35 @@ export class QLearner {
                 const networkInputs = [
                     ...inputs,
                     ...currentSample.firstFrame,
-                    ((currentSample.lastTransaction && currentSample.lastTransaction.secondFrame) || currentSample.firstFrame)
+                    ...((currentSample && currentSample.secondFrame) || currentSample.firstFrame)
                 ];
 
                 const reward = currentSample.getReward();
-                this.network.activate(networkInputs);
-                this.network.propagate(1, reward);
+                for (let index = 0; index < 20; index++) {
+                    this.network.activate(networkInputs);
+                    this.network.propagate(0.3, [reward]);
+                }
                 currentSample = currentSample.nextState;
             }
+        }
+    }
+
+    isValidDesitions() {
+        const sampleStart = this.historyTransaction[0];
+        let currentSample = sampleStart;
+        while (currentSample) {
+            const inputs = QLearner.getNetworkInputs(currentSample.action);
+
+            const networkInputs = [
+                ...inputs,
+                ...currentSample.firstFrame,
+                ...((currentSample.lastTransaction && currentSample.lastTransaction.secondFrame) || currentSample.firstFrame)
+            ];
+
+            const reward = currentSample.getReward();
+            this.network.activate(networkInputs);
+            this.network.propagate(0.2, [reward]);
+            currentSample = currentSample.nextState;
         }
     }
 }
@@ -177,7 +205,7 @@ export class Transaction {
         if (this.nextState) {
             return this.reward + this.nextState.getReward();
         } else {
-            return this.reward;
+            return +this.reward;
         }
     }
 }

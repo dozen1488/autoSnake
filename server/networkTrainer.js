@@ -1,8 +1,7 @@
 const _ = require("lodash");
 const { QLearner } = require('../crossPlatformModels/dist/qLearningClass');
 
-function trainNetwork(qLearnerJSON) {
-    const qLearner = QLearner.deserialize(qLearnerJSON);
+function trainNetwork(qLearner) {
     qLearner.adjustNetwork();
 
     return qLearner.network;
