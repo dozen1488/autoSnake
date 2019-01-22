@@ -4,7 +4,7 @@ import range from "lodash/range";
 import { Network } from "synaptic";
 //const { Network } = require("synaptic")
 
-import random from 'lodash/random';
+import random from "lodash/random";
 //const random = require('lodash/random')
 
 import { TURNS } from "./direction";
@@ -16,15 +16,18 @@ import { radiusOfVisionForNetwork, FramesNumber } from "../../config";
 
 export class QLearner {
     constructor(
-        network = generateNetwork(
-            radiusOfVisionForNetwork,
-            radiusOfVisionForNetwork,
-            FramesNumber,
-            Object.keys(TURNS).length
-        ), historyTransaction = []
+        network, historyTransaction = []
     ) {
+        const networkObject = (network)
+            ? Network.fromJSON(network)
+            : generateNetwork(
+                radiusOfVisionForNetwork,
+                radiusOfVisionForNetwork,
+                FramesNumber,
+                Object.keys(TURNS).length
+            );
         this.historyTransaction = historyTransaction;
-        this.network = network;
+        this.network = networkObject;
         this.actionCache = null;
     }
 
@@ -52,10 +55,9 @@ export class QLearner {
     }
 
     static getActionCases() {
-        
         const actionNumber = Object.keys(TURNS).length;
 
-        return actionCases = range(0, actionNumber, 0)
+        return range(0, actionNumber, 0)
             .map((value, index) => {
                 const inputs = range(0, actionNumber, 0);
                 inputs[index] = 1;
@@ -74,8 +76,6 @@ export class QLearner {
     }
 
     makeDecision(image) {
-        const actionNumber = Object.keys(TURNS).length;
-
         const { index: resultIndex } = QLearner.getActionCases().reduce(
             ({ index, maxValue }, currentInputs, currIndex) => {
                 const input = [...currentInputs, ...image, ((this.lastTransaction && this.lastTransaction.secondFrame) || image)];
@@ -108,21 +108,23 @@ export class QLearner {
         if (!plainJSON) {
             return new QLearner();
         }
-        const network = Network.fromJSON(plainJSON.network);
 
         const historyTransaction = plainJSON.historyTransaction.map(
             (plainTransaction, index, array) => {
-                const nextTransaction = (index < array.length) ? array[index + 1] : null;
+                const nextTransaction = (index < array.length - 1)
+                    ? Transaction.deserialize(array[index + 1])
+                    : null;
+
                 return Transaction.deserialize(plainTransaction, nextTransaction);
             }
-        )
+        );
 
-        return new QLearner(network, historyTransaction);
+        return new QLearner(plainJSON.network, historyTransaction);
     }
 
     adjustNetwork() {
         if (this.historyTransaction.length > 0) {
-            const sampleStart = this.historyTransaction[random(0, historyTransaction.length - 1)];
+            const sampleStart = this.historyTransaction[random(0, this.historyTransaction.length - 1)];
             let currentSample = sampleStart;
             while (currentSample) {
                 const inputs = QLearner.getNetworkInputs(currentSample.action);
@@ -134,7 +136,7 @@ export class QLearner {
                 ];
 
                 const reward = currentSample.getReward();
-                this.network.activate(networkInputs)
+                this.network.activate(networkInputs);
                 this.network.propagate(1, reward);
                 currentSample = currentSample.nextState;
             }
@@ -172,7 +174,7 @@ export class Transaction {
     }
 
     getReward() {
-        if(this.nextState) {
+        if (this.nextState) {
             return this.reward + this.nextState.getReward();
         } else {
             return this.reward;

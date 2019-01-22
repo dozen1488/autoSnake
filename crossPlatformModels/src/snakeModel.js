@@ -8,7 +8,7 @@ export class Snake {
         this._direction = new Direction();
         this._tail = [];
         this._tail.push(startPoint);
-        this.qLearner = new QLearner(networkJSON );
+        this.qLearner = new QLearner(networkJSON);
     }
 
     get tail() {

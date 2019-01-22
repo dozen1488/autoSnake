@@ -17,8 +17,8 @@ const app = express();
 
 const qLearner = new QLearner();
 
+app.use(bodyParser.json({ limit: "50mb" }));
 app.use(express.static("./server-static"));
-app.use(bodyParser.json());
 app.listen(PORT);
 
 app.get("/getNetwork", (req, res) => {
@@ -28,8 +28,8 @@ app.get("/getNetwork", (req, res) => {
 });
 
 app.post("/applyImages", (req, res) => {
-    trainingImages = mergeImages(trainingImages, req.body);
-    network = networkTrainer(network, trainingImages);
+    const rawQlearner = req.body;
+    const network = networkTrainer(rawQlearner);
     res
         .status(200)
         .end();
