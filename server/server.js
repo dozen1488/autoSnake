@@ -12,7 +12,6 @@ const _ = require("lodash");
 const { QLearner } = require('../crossPlatformModels/dist/qLearningClass');
 
 const networkTrainer = require("./networkTrainer");
-const mergeImages = require("./mergeImages");
 const app = express();
 
 const qLearner = new QLearner();
@@ -30,7 +29,8 @@ app.get("/getNetwork", (req, res) => {
 app.post("/applyImages", (req, res) => {
     const rawQlearner = req.body;
     const acceptedQlearner = QLearner.deserialize(rawQlearner);
-    qLearner.network = networkTrainer(acceptedQlearner);
+    qLearner.experience.push(acceptedQlearner.historyTransaction);
+    qLearner.network = networkTrainer(qLearner);
     res
         .status(200)
         .end();
@@ -67,8 +67,8 @@ function readNetwork() {
     }
 }
 
-function saveNetwork(network) {
-    fs.writeFileSync(NETWORK_FILE_NAME, JSON.stringify(network, null, "\t"));
+function saveData(data) {
+    fs.writeFileSync(NETWORK_FILE_NAME, JSON.stringify(data, null, "\t"));
 }
 
 function saveImages(images) {

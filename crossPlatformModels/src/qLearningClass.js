@@ -16,7 +16,7 @@ import { radiusOfVisionForNetwork, FramesNumber } from "../../config";
 
 export class QLearner {
     constructor(
-        network, historyTransaction = []
+        network, historyTransaction = [], chanceOfRandomAction = 80
     ) {
         const networkObject = (network)
             ? Network.fromJSON(network)
@@ -29,6 +29,17 @@ export class QLearner {
         this.historyTransaction = historyTransaction;
         this.network = networkObject;
         this.actionCache = 0;
+        this.chanceOfRandomAction = chanceOfRandomAction;
+        this.normalizeCoefficient = 3;
+        this.experience = [];
+    }
+
+    normilizeValue(value) {
+        if (value > this.normalizeCoefficient) {
+            return 1;
+        } else {
+            return value / this.normalizeCoefficient;
+        }
     }
 
     get lastTransaction() {
@@ -76,7 +87,7 @@ export class QLearner {
     }
 
     makeDecision(image) {
-        if (random(0, 100) > 0) {
+        if (random(0, 100) > this.chanceOfRandomAction) {
             const { index: resultIndex } = QLearner.getActionCases().reduce(
                 ({ index, maxValue }, currentInputs, currIndex) => {
                     const input = [
@@ -108,7 +119,8 @@ export class QLearner {
     serialize() {
         return {
             network: this.network.toJSON(),
-            historyTransaction: this.historyTransaction.map(t => t.serialize())
+            historyTransaction: this.historyTransaction.map(t => t.serialize()),
+            chanceOfRandomAction: this.chanceOfRandomAction
         };
     }
 
@@ -125,13 +137,13 @@ export class QLearner {
             historyTransaction[index].nextState = historyTransaction[index + 1];
         }
 
-        return new QLearner(plainJSON.network, historyTransaction);
+        return new QLearner(plainJSON.network, historyTransaction, plainJSON.chanceOfRandomAction);
     }
 
-    adjustNetwork() {
-        if (this.historyTransaction.length > 0) {
-            const sampleStart = this.historyTransaction[0];
-            // const sampleStart = this.historyTransaction[random(0, this.historyTransaction.length - 1)];
+    trainSample(sample) {
+        if (sample.length > 0) {
+            const sampleStart = sample[0];
+            // const sampleStart = sample[random(0, sample.length - 1)];
             let currentSample = sampleStart;
             while (currentSample) {
                 const inputs = QLearner.getNetworkInputs(currentSample.action);
@@ -142,7 +154,7 @@ export class QLearner {
                     ...((currentSample && currentSample.secondFrame) || currentSample.firstFrame)
                 ];
 
-                const reward = currentSample.getReward();
+                const reward = this.normilizeValue(currentSample.getReward());
                 for (let index = 0; index < 20; index++) {
                     this.network.activate(networkInputs);
                     this.network.propagate(0.3, [reward]);
@@ -150,6 +162,13 @@ export class QLearner {
                 currentSample = currentSample.nextState;
             }
         }
+    }
+
+    adjustNetwork() {
+        for (let index = 0; index < this.experience.length; index++) {
+            this.trainSample(this.experience[index]);
+        }
+        this.chanceOfRandomAction = this.chanceOfRandomAction - 5;
     }
 
     isValidDesitions() {
