@@ -8,7 +8,7 @@ import render from "../views/boardView";
 import deadSnake from "../views/deadSnake";
 import spinner from "../views/spinnerView";
 
-import { Requester, Impulser, KeyboardListener } from "../managers/externalManagers";
+import { Requester, KeyboardListener } from "../managers/externalManagers";
 
 export default class Board extends React.Component {
 
@@ -48,7 +48,7 @@ export default class Board extends React.Component {
 
     networkReadyHandler(listener) {
         listener.remove();
-        
+
         KeyboardListener.startListening(actions.keyPressed);
         const innerListener = store.addListener(
             () => this.changedStateHandler(innerListener)

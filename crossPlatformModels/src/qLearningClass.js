@@ -140,6 +140,14 @@ export class QLearner {
         return new QLearner(plainJSON.network, historyTransaction, plainJSON.chanceOfRandomAction);
     }
 
+    trainBatch(input, result) {
+        let answer = null;
+        do {
+            answer = this.network.activate(input)[0];
+            this.network.propagate(0.1, [result]);
+        } while (Math.abs(answer - result) > 0.1);
+    }
+
     trainSample(sample) {
         if (sample.length > 0) {
             const sampleStart = sample[0];
@@ -155,10 +163,7 @@ export class QLearner {
                 ];
 
                 const reward = this.normilizeValue(currentSample.getReward());
-                for (let index = 0; index < 20; index++) {
-                    this.network.activate(networkInputs);
-                    this.network.propagate(0.3, [reward]);
-                }
+                this.trainBatch(networkInputs, reward);
                 currentSample = currentSample.nextState;
             }
         }
