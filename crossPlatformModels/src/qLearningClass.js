@@ -142,6 +142,14 @@ export class QLearner {
         return new QLearner(plainJSON.network, historyTransaction, plainJSON.chanceOfRandomAction);
     }
 
+    trainBatch(input, result) {
+        let answer = null;
+        do {
+            answer = this.network.activate(input)[0];
+            this.network.propagate(0.1, [result]);
+        } while (Math.abs(answer - result) > 0.1);
+    }
+
     trainSample(sample) {
         if (sample.length > 0) {
             const sampleStart = sample[0];
