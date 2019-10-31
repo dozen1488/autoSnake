@@ -14,14 +14,14 @@ import {
 class BoardModel {
 
     constructor(
-        { sizeOfX = defaultSizeOfX, sizeOfY = defaultSizeOfY }, //    Size
-        { network, radiusOfVisionForNetwork = defaultRadiusOfVisionForNetwork } //  Network settings
+        { sizeOfX = defaultSizeOfX, sizeOfY = defaultSizeOfY, board }, //    Size
+        { network, radiusOfVisionForNetwork = defaultRadiusOfVisionForNetwork, chanceOfRandomAction } //  Network settings
     ) {
         if (sizeOfX < 2 || sizeOfY < 2) {
             throw new Error(ErrorConstants.TOO_SMALL_BOARD);
         }
 
-        this.board = new Array(sizeOfX)
+        this.board = board || new Array(sizeOfX)
             .fill(0)
             .map(() => new Array(sizeOfY).fill(SellsMeaning.Empty));
         this.snake = new Snake(
@@ -83,6 +83,11 @@ class BoardModel {
 
         if (gameOverCondition) {
             this._saveSnapshotForNetwork(boardSnap, ACTION_FAILED, turn);
+
+            this.snake.move(
+                false,
+                boardSnap
+            );
 
             return this._gameOver();
         }

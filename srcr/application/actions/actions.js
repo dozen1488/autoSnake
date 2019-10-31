@@ -1,5 +1,6 @@
 import ActionTypes from "./actionTypes";
 import MouseCLicks from "../sharedConstants/MouseClickMeaning.json";
+import defaultBoard from "../sharedConstants/defaultBoard.json";
 
 import Store from "../stores/store";
 import Dispatcher from "../dispatcher/dispatcher";
@@ -60,7 +61,7 @@ export function onHover(x, y) {
         changedSquares, type: ActionTypes.onHover
     });
 }
-    
+
 export function onRelease() {
     Dispatcher.dispatch({
         type: ActionTypes.onRelease
@@ -84,6 +85,7 @@ export function networkReady(network) {
         {
             sizeOfX: x,
             sizeOfY: y,
+            board: defaultBoard
         }, {
             network: network,
             radiusOfVisionForNetwork: radiusOfVisionForNetwork

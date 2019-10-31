@@ -3,7 +3,6 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
-    "editor.fontFamily": "'Droid Sans Mono',monospace",
     //"editor.renderWhitespace": "all",
     "jslint.version": "es6",
     "editor.fontSize": 17,

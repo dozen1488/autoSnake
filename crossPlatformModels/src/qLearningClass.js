@@ -16,7 +16,7 @@ import { radiusOfVisionForNetwork, FramesNumber } from "../../config";
 
 export class QLearner {
     constructor(
-        network, historyTransaction = [], chanceOfRandomAction = 80
+        network, historyTransaction = [], chanceOfRandomAction = 70
     ) {
         const networkObject = (network)
             ? Network.fromJSON(network)
@@ -128,13 +128,15 @@ export class QLearner {
         if (!plainJSON) {
             return new QLearner();
         }
+        let historyTransaction = [];
+        if (plainJSON.historyTransaction) {
+            historyTransaction = plainJSON.historyTransaction.map(
+                (plainTransaction) => Transaction.deserialize(plainTransaction)
+            );
 
-        const historyTransaction = plainJSON.historyTransaction.map(
-            (plainTransaction) => Transaction.deserialize(plainTransaction)
-        );
-
-        for (let index = 0; index < historyTransaction.length - 1; index++) {
-            historyTransaction[index].nextState = historyTransaction[index + 1];
+            for (let index = 0; index < historyTransaction.length - 1; index++) {
+                historyTransaction[index].nextState = historyTransaction[index + 1];
+            }
         }
 
         return new QLearner(plainJSON.network, historyTransaction, plainJSON.chanceOfRandomAction);
@@ -154,10 +156,10 @@ export class QLearner {
                     ...((currentSample && currentSample.secondFrame) || currentSample.firstFrame)
                 ];
 
-                const reward = this.normilizeValue(currentSample.getReward());
+                const reward = +this.normilizeValue(currentSample.getReward());
                 for (let index = 0; index < 20; index++) {
                     this.network.activate(networkInputs);
-                    this.network.propagate(0.3, [reward]);
+                    this.network.propagate(0.03, [reward]);
                 }
                 currentSample = currentSample.nextState;
             }
@@ -168,7 +170,7 @@ export class QLearner {
         for (let index = 0; index < this.experience.length; index++) {
             this.trainSample(this.experience[index]);
         }
-        this.chanceOfRandomAction = this.chanceOfRandomAction - 5;
+        this.chanceOfRandomAction = this.chanceOfRandomAction - 1;
     }
 
     isValidDesitions() {

@@ -4,11 +4,11 @@ import { QLearner } from "./qLearningClass";
 import { Direction, TURNS } from "./direction";
 
 export class Snake {
-    constructor(startPoint, networkJSON) {
+    constructor(startPoint, network) {
         this._direction = new Direction();
         this._tail = [];
         this._tail.push(startPoint);
-        this.qLearner = new QLearner(networkJSON);
+        this.qLearner = QLearner.deserialize(network);
     }
 
     get tail() {

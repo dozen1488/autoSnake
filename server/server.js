@@ -23,7 +23,7 @@ app.listen(PORT);
 app.get("/getNetwork", (req, res) => {
     res
         .status(200)
-        .send(JSON.stringify(qLearner.network.toJSON()));
+        .send(JSON.stringify(qLearner.serialize()));
 });
 
 app.post("/applyImages", (req, res) => {
