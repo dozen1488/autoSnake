@@ -9,9 +9,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const _ = require("lodash");
-const { QLearner } = require('../crossPlatformModels/dist/qLearningClass');
+const { QLearner } = require('../crossPlatformModels/src/qLearningClass.ts');
 
-const networkTrainer = require("./networkTrainer");
+const trainNetwork = require("./networkTrainer");
 const app = express();
 
 const qLearner = new QLearner();
@@ -30,7 +30,7 @@ app.post("/applyImages", (req, res) => {
     const rawQlearner = req.body;
     const acceptedQlearner = QLearner.deserialize(rawQlearner);
     qLearner.experience.push(acceptedQlearner.historyTransaction);
-    qLearner.network = networkTrainer(qLearner);
+    qLearner.network = trainNetwork(qLearner);
     res
         .status(200)
         .end();
@@ -41,13 +41,13 @@ console.log("PID is " + process.pid);
 
 process
     .on("SIGINT", () => {
-        saveNetwork(network.toJSON());
-        saveImages(trainingImages);
+        saveData(network.toJSON());
+        // saveImages(trainingImages);
         process.exit(0);
     })
     .on("SIGTERM", () => {
-        saveNetwork(network.toJSON());
-        saveImages(trainingImages);
+        saveData(network.toJSON());
+        // saveImages(trainingImages);
         process.exit(0);
     });
 

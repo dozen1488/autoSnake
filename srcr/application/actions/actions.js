@@ -24,7 +24,9 @@ export function gameOver(images) {
         type: ActionTypes.gameOver
     });
 
-    Requester.sendImages(images).then(() => {});
+    Requester.sendImages(images).then(() => {
+        document.location.reload();
+    });
 }
 
 export function onClick(x, y, buttonNumber) {

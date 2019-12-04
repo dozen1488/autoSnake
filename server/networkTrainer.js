@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const { QLearner } = require('../crossPlatformModels/dist/qLearningClass');
+const { QLearner } = require('../crossPlatformModels/src/qLearningClass');
 
 function trainNetwork(qLearner) {
     qLearner.adjustNetwork();

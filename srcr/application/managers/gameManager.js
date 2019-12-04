@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { BoardModel } from "../../../crossPlatformModels/dist/boardModel";
+import { BoardModel } from "../../../crossPlatformModels/dist/crossPlatformModels/src/boardModel";
 import { Impulser } from "./externalManagers";
 
 class GameManager {
@@ -38,7 +38,7 @@ class GameManager {
         this._impulseCallback = impulseCallback;
         this._gameOverCallback = gameOverCallback;
 
-        this._impulsingFunc = Impulser.startImpulsing(() => this._impulseBoard());
+        this._impulsingFunc = Impulser.startImpulsing(() => this._impulseBoard(), impulseFrequency);
     }
 
     _impulseBoard() {

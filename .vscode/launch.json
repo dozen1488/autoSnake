@@ -13,8 +13,12 @@
             "cwd": "${workspaceFolder}/server",
             "sourceMaps": true,
             "env": {
-                "DEBUG": "express:*"
-            }
+                "DEBUG": "express:*",
+                "TS_NODE_PROJECT": "${workspaceFolder}/crossPlatformModels/tsconfig.json"
+            },
+            "args": ["${relativeFile}"],
+            "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
+            "protocol": "inspector"
         },{
             "type": "node",
             "request": "launch",    
