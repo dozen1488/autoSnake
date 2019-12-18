@@ -29,7 +29,7 @@ app.get("/getNetwork", (req, res) => {
 app.post("/applyImages", (req, res) => {
     const rawQlearner = req.body;
     const acceptedQlearner = QLearner.deserialize(rawQlearner);
-    qLearner.experience.push(acceptedQlearner.historyTransaction);
+    qLearner.saveNewData(acceptedQlearner.historyTransaction);
     qLearner.network = trainNetwork(qLearner);
     res
         .status(200)

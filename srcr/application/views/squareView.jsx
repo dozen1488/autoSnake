@@ -14,6 +14,8 @@ export default class Square extends React.Component {
     render() {
         return (
             <img src={ImageStatus[this.props.status]}
+                key={this.props.x + ' ' + this.props.y}
+                alt={this.props.x + ' ' + this.props.y}
                 draggable="false"
                 onMouseOver={() => {
                     this.props.actions.onHover(this.props.x, this.props.y);

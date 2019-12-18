@@ -1,55 +1,84 @@
 import range from "lodash/range";
 //const range = require('lodash/range')
 
-import { Network, Trainer } from "synaptic";
-//const { Network } = require("synaptic")
+import { NeuralNetwork } from "brain.js";
 
 import random from "lodash/random";
+import isEqual from "lodash/isEqual";
 //const random = require('lodash/random')
 
 import { TURNS } from "./direction";
 //const { TURNS } = require('./direction')
 
-import { generateNetwork } from "./generateNetwork";
+import { generateRewardNetwork, generateStateNetwork } from "./generateNetwork";
 
 import { radiusOfVisionForNetwork, FramesNumber } from "../../config.json";
 
 export class QLearner {
 
     historyTransaction: Array<Transaction>
-    network: Network
-    actionCache: number 
+    stateNetwork: NeuralNetwork
+    rewardNetwork: NeuralNetwork
+    actionCache: number
     chanceOfRandomAction: number
     normalizeCoefficient: number
     maxValue: number
-    experience: Array<Array<Transaction>>
+    experience: any
 
     constructor(
-        network?: any, historyTransaction : Array<Transaction> = [], chanceOfRandomAction: number = 100, maxValue = 0
+        stateNetwork?: any, rewardNetwork?: any, historyTransaction: Array<Transaction> = [], chanceOfRandomAction: number = 120, maxValue = 0
     ) {
-        const networkObject = (network)
-            ? Network.fromJSON(network)
-            : generateNetwork(
+        this.historyTransaction = historyTransaction;
+        this.stateNetwork = (stateNetwork)
+            ? (new NeuralNetwork()).fromJSON(stateNetwork)
+            : generateStateNetwork(
                 radiusOfVisionForNetwork,
                 radiusOfVisionForNetwork,
-                FramesNumber,
+                Object.keys(TURNS).length
+            );;
+        this.rewardNetwork = (rewardNetwork)
+            ? (new NeuralNetwork()).fromJSON(rewardNetwork)
+            : generateRewardNetwork(
+                radiusOfVisionForNetwork,
+                radiusOfVisionForNetwork,
                 Object.keys(TURNS).length
             );
-        this.historyTransaction = historyTransaction;
-        this.network = networkObject;
         this.actionCache = 0;
         this.chanceOfRandomAction = chanceOfRandomAction;
         this.normalizeCoefficient = 1;
-        this.experience = [];
+        this.experience = {
+            stateExperiance: [],
+            rewardExperiance: []
+        };
         this.maxValue = maxValue;
+    }
+
+    normilizeImage(image: Array<number>) {
+        return image.map(value => (value + 1) / 2);
+    }
+
+    denormilizeImage(image: Array<number>) {
+        return image.map(value => Math.round(value / 0.5) * 0.5 * 2 - 1);
     }
 
     normilizeValue(value: number) {
         if (value >= this.maxValue) {
-            this.maxValue = value;
             return 1;
         } else {
             return value / this.maxValue;
+        }
+    }
+
+    updateNormalizeCoefficient(value: number) {
+        if (value >= this.maxValue) {
+            const oldValue = this.maxValue;
+            this.maxValue = value;
+            this.experience.rewardExperiance = this.experience.rewardExperiance.map(
+                (experiance: any) => ({
+                    ...experiance,
+                    output: [experiance.output[0] * oldValue / value]
+                })
+            );
         }
     }
 
@@ -78,7 +107,7 @@ export class QLearner {
                 ];
 
                 const reward = +this.normilizeValue(currentSample.getReward());
-                const answer = this.network.activate(networkInputs);
+                const answer = this.rewardNetwork.run(networkInputs);
                 sum = (reward - answer[0]) ** 2;
                 currentSample = currentSample.nextState;
             }
@@ -86,20 +115,27 @@ export class QLearner {
         return Math.sqrt(sum);
     }
 
-    saveTransaction(screenFrame: Array<number>, action: number, reward: number) {
+    saveTransaction(screenFrame: Array<number>, action: number, reward: number, direction: number) {
         let previousTransaction = this.lastTransaction;
         const newTransaction = new Transaction(
-            (previousTransaction && previousTransaction.secondFrame) || null,
+            screenFrame, //(previousTransaction && previousTransaction.secondFrame) || null,
             screenFrame,
-            this.actionCache,
+            action,
             reward,
-            null
+            null,
+            direction
         );
         this.actionCache = action;
         this.historyTransaction.push(newTransaction);
         if (previousTransaction) {
             previousTransaction.nextState = newTransaction;
         }
+    }
+
+    static getInputByDirection(direction: number) {
+        const array = range(0, Object.keys(TURNS).length, 0);
+        array[direction] = 1;
+        return array;
     }
 
     static getActionCases() {
@@ -123,18 +159,23 @@ export class QLearner {
         return inputs;
     }
 
-    makenetworkDecision(
+    makeNetworkDecision(
         image: any,
-        nextImage: any
+        direction: number
     ) {
         const { index: resultIndex } = QLearner.getActionCases().reduce(
             ({ index, maxValue }: any, currentInputs: Array<number>, currIndex: number) => {
-                const input = [
+                const nextStateInput = [
                     ...currentInputs,
-                    ...image,
-                    ...nextImage
+                    ...this.normilizeImage(image)
+                ]
+                // const newState = this.stateNetwork.run(nextStateInput);
+                const input = [
+                    ...QLearner.getInputByDirection(direction),
+                    ...currentInputs,
+                    ...this.normilizeImage(image)
                 ];
-                const [valueFunction] = this.network.activate(input);
+                const [valueFunction] = this.rewardNetwork.run(input);
                 if (valueFunction >= maxValue) {
                     return {
                         index: currIndex,
@@ -144,9 +185,9 @@ export class QLearner {
                     return { index, maxValue };
                 }
             }, {
-                index: -1,
-                maxValue: -Infinity
-            }
+            index: -1,
+            maxValue: -Infinity
+        }
         );
         console.log("Decision: " + resultIndex);
         return resultIndex;
@@ -158,11 +199,12 @@ export class QLearner {
 
     makeDecision(
         image: any,
+        direction: number,
         nextImage = (this.lastTransaction && this.lastTransaction.secondFrame) || image,
-        chanceOfRandomAction = this.chanceOfRandomAction
-    ) {
+        chanceOfRandomAction = this.chanceOfRandomAction,
+    ) { 
         if (random(0, 100) > chanceOfRandomAction) {
-            return this.makenetworkDecision(image, nextImage);
+            return this.makeNetworkDecision(image, direction);
         } else {
             return this.makeExploringAction();
         }
@@ -171,7 +213,8 @@ export class QLearner {
     serialize() {
         return {
             maxValue: this.maxValue,
-            network: this.network.toJSON(),
+            stateNetwork: this.stateNetwork.toJSON(),
+            rewardNetwork: this.rewardNetwork.toJSON(),
             historyTransaction: this.historyTransaction.map(t => t.serialize()),
             chanceOfRandomAction: this.chanceOfRandomAction
         };
@@ -192,77 +235,118 @@ export class QLearner {
             }
         }
 
-        return new QLearner(plainJSON.network, historyTransaction, plainJSON.chanceOfRandomAction, plainJSON.maxValue);
+        return new QLearner(plainJSON.stateNetwork, plainJSON.rewardNetwork, historyTransaction, plainJSON.chanceOfRandomAction, plainJSON.maxValue);
     }
 
-    trainBatch(input: any, result: number) {
-        let answer = null;
-        do {
-            answer = this.network.activate(input)[0];
-            this.network.propagate(0.1, [result]);
-        } while (Math.abs(answer - result) > 0.1);
+    trainSample() {
+        // this.stateNetwork.train(this.experience.stateExperiance);
+        const rate = 0.9;
+        let error = 1;
+        let diff = 1;
+        while (error > 0.0005 && diff > 0.00004) {
+            const result = this.rewardNetwork.train(
+                this.experience.rewardExperiance,
+                {
+                    learningRate: rate - diff + 0.1,
+                    errorThresh: 0.005,
+                    iterations: 2000, 
+                    logPeriod: 1000,
+                    log: (error) => console.log(error)
+                }
+            );
+            diff = error - result.error;
+            error = result.error;
+        }
     }
 
-    clearExperiance() {
-        this.experience = this.experience.filter(
-            (sample => this.getErrorCoficient(sample) >= 0.0001)
-        )
-    }
-
-    trainSample(sample: Array<Transaction>) {
-        if (sample.length > 1) {
-            const trainingData = sample.slice(1).map(currentSample => {
+    saveNewData(newExperiance: Array<Transaction>) {
+        const trainingStateData = newExperiance
+            .filter((currentSample) => currentSample.firstFrame)
+            .map(currentSample => {
                 const inputs = QLearner.getNetworkInputs(currentSample.action);
                 const networkInputs = [
+                    ...QLearner.getInputByDirection(currentSample.direction),
                     ...inputs,
-                    ...currentSample.firstFrame || [],
-                    ...((currentSample && currentSample.secondFrame) || currentSample.firstFrame)
+                    ...this.normilizeImage(currentSample.firstFrame || [])
                 ];
-                
-                const reward = +this.normilizeValue(currentSample.getReward());
+
                 return {
                     input: networkInputs,
-                    output: [reward]
+                    output: this.normilizeImage((currentSample && currentSample.secondFrame) || currentSample.firstFrame)
                 };
             });
-            const trainer = new Trainer(this.network);
-            trainer.train(trainingData, {
-                error: .005,
-                rate: .05,
-                log: 1000
+        const filteredStateExp = this.experience.stateExperiance.filter((previousExperiance: any) => {
+            const sameInput = trainingStateData.find((newData: any) => isEqual(newData, previousExperiance));
+            return !sameInput;
+        });
+        // this.experience.stateExperiance = filteredStateExp.concat(trainingStateData);
+        let trainingRewardData: Array<any> = newExperiance
+            .filter((currentSample) => currentSample.firstFrame)
+            .map(currentSample => {
+                const inputs = QLearner.getNetworkInputs(currentSample.action);
+                const networkInputs = [
+                    ...QLearner.getInputByDirection(currentSample.direction),
+                    ...inputs,
+                    ...this.normilizeImage(currentSample.firstFrame || [])
+                ];
+
+                const reward = currentSample.getReward();
+                this.updateNormalizeCoefficient(reward);
+
+                return {
+                    input: networkInputs,
+                    output: [this.normilizeValue(reward)]
+                };
             });
-        }
-        return this.getErrorCoficient(sample);
+
+        const filteredExp = this.experience.rewardExperiance.filter((previousExperiance: any) => {
+            const sameInput = trainingRewardData.find(
+                (newData: any) => isEqual(newData.input, previousExperiance.input)
+            );
+            if (sameInput) {
+                if (sameInput.output[0] >= previousExperiance.output[0]) {
+                    return false;
+                } else {
+                    trainingRewardData.splice(trainingRewardData.indexOf(sameInput), 1);
+                    return true;
+                }
+            }
+            return true;
+        });
+        this.experience.rewardExperiance = filteredExp.concat(trainingRewardData);
+        console.log("State experiance: " + this.experience.stateExperiance.length);
+        console.log("Reward experiance: " + this.experience.rewardExperiance.length);
     }
 
     adjustNetwork() {
-        for (let index = 0; index < this.experience.length; index++) {
-            this.trainSample(this.experience[index]);
-            console.log(this.getErrorCoficient(this.experience[index]));
-        }
-        this.clearExperiance();
-        this.chanceOfRandomAction = this.chanceOfRandomAction > 10 ? this.chanceOfRandomAction - 1 : this.chanceOfRandomAction;
+        // this.clearExperiance();
+        this.trainSample();
+        this.chanceOfRandomAction = this.chanceOfRandomAction > 5 ? this.chanceOfRandomAction - 1 : this.chanceOfRandomAction;
     }
 }
 
 export class Transaction {
     firstFrame: Array<number> | null // First frame
-    secondFrame:  Array<number> // Next frame
+    secondFrame: Array<number> // Next frame
     action: number // Action brought to Next frame
     reward: number // Reward in transaction
     nextState: Transaction | null // next transaction
+    direction: number
 
-    constructor(firstFrame: Array<number> | null,
+    constructor(
+        firstFrame: Array<number> | null,
         secondFrame: Array<number>,
         action: number,
         reward: number,
-        nextState: Transaction | null
+        nextState: Transaction | null,
+        direction: number
     ) {
         this.firstFrame = firstFrame;
         this.secondFrame = secondFrame;
         this.action = action;
         this.reward = reward;
         this.nextState = nextState;
+        this.direction = direction;
     }
 
     static deserialize(plainJSON: any, nextState?: any) {
@@ -271,7 +355,8 @@ export class Transaction {
             plainJSON.secondFrame,
             plainJSON.action,
             plainJSON.reward,
-            nextState
+            nextState,
+            plainJSON.direction
         );
     }
 
@@ -281,13 +366,14 @@ export class Transaction {
             secondFrame: this.secondFrame,
             action: this.action,
             reward: this.reward,
-            nextState: null
+            nextState: null,
+            direction: this.direction
         };
     }
 
     getReward(): number {
         if (this.nextState) {
-            return this.reward + this.nextState.getReward();
+            return this.reward + 0.1 + this.nextState.getReward();
         } else {
             return +this.reward;
         }

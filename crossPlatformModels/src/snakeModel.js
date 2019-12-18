@@ -28,7 +28,7 @@ export class Snake {
     }
 
     move(withIncrement, environment) {
-        const turn = this._getTurn(environment, withIncrement);
+        const turn = this._getTurn(environment, withIncrement, this._direction._dir);
         switch (turn) {
             case TURNS.LEFT:
                 this._direction.left();
@@ -60,9 +60,9 @@ export class Snake {
         return { head: newHead, turn };
     }
 
-    _getTurn(image, withIncrement) {
-        const networkAnswer = this.qLearner.makeDecision(image);
-        this.qLearner.saveTransaction(image, networkAnswer, withIncrement);
+    _getTurn(image, withIncrement, direction) {
+        const networkAnswer = this.qLearner.makeDecision(image, direction);
+        this.qLearner.saveTransaction(image, networkAnswer, withIncrement, direction);
 
         return networkAnswer;
     }

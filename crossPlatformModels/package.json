@@ -10,6 +10,7 @@
     "author": "Dmitry",
     "license": "MIT",
     "dependencies": {
+        "brain.js": "^2.0.0-alpha.9",
         "lodash": "^4.17.4",
         "rotate-matrix": "0.0.3",
         "synaptic": "^1.1.4"

@@ -82,7 +82,7 @@ class BoardModel {
         );
 
         if (gameOverCondition) {
-            this._saveSnapshotForNetwork(boardSnap, ACTION_FAILED, turn);
+            this._saveSnapshotForNetwork(boardSnap, ACTION_FAILED, turn, this.snake.direction);
 
             this.snake.move(
                 false,
@@ -149,11 +149,12 @@ class BoardModel {
         return _.flatten(image);
     }
 
-    _saveSnapshotForNetwork(snapshot, result, direction) {
+    _saveSnapshotForNetwork(snapshot, result, action, direction) {
         this.path.push({
             result,
             image: snapshot,
-            decision: direction
+            decision: action,
+            direction: direction
         });
     }
 
