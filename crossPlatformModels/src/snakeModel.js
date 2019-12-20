@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { QLearner } from "./qLearningClass";
+import { AgentSerializer } from "./qLearning/AgentSerializer";
 import { Direction, TURNS } from "./direction";
 
 export class Snake {
@@ -8,7 +8,7 @@ export class Snake {
         this._direction = new Direction();
         this._tail = [];
         this._tail.push(startPoint);
-        this.qLearner = QLearner.deserialize(network);
+        this.qLearner = AgentSerializer.deserialize(network);
     }
 
     get tail() {

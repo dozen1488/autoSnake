@@ -9,12 +9,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const _ = require("lodash");
-const { QLearner } = require('../crossPlatformModels/src/qLearningClass.ts');
+const { AgentSerializer } = require('../crossPlatformModels/src/qLearning/agentSerializer');
 
 const trainNetwork = require("./networkTrainer");
 const app = express();
 
-const qLearner = new QLearner();
+const qLearner = new AgentSerializer();
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(express.static("./server-static"));
@@ -28,7 +28,7 @@ app.get("/getNetwork", (req, res) => {
 
 app.post("/applyImages", (req, res) => {
     const rawQlearner = req.body;
-    const acceptedQlearner = QLearner.deserialize(rawQlearner);
+    const acceptedQlearner = AgentSerializer.deserialize(rawQlearner);
     qLearner.saveNewData(acceptedQlearner.historyTransaction);
     qLearner.network = trainNetwork(qLearner);
     res
@@ -41,12 +41,12 @@ console.log("PID is " + process.pid);
 
 process
     .on("SIGINT", () => {
-        saveData(network.toJSON());
+        saveData(`qLearner`.deserialize());
         // saveImages(trainingImages);
         process.exit(0);
     })
     .on("SIGTERM", () => {
-        saveData(network.toJSON());
+        saveData(qLearner.deserialize());
         // saveImages(trainingImages);
         process.exit(0);
     });

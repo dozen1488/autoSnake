@@ -21,18 +21,14 @@ function generateNetwork(n, m, framesNumber, actionNumber) {
 }
 
 function generateStateNetwork(n, m, actionNumber) {
-    const size = ((n * 2 + 1) * (m * 2 + 1)) + actionNumber;
+    const size = ((n * 2 + 1) * (m * 2 + 1)) + actionNumber + actionNumber;
 
     const config = {
         inputSize: size,
         outputSize: size - actionNumber,
-        binaryThresh: 0.5,
-        learningRate: 0.01,
-        decayRate: 0.999,
-        logPeriod: 1000,
         hiddenLayers: [size, size], // array of ints for the sizes of the hidden layers in the network
         activation: 'sigmoid', // supported activation types: ['sigmoid', 'relu', 'leaky-relu', 'tanh'],
-        leakyReluAlpha: 0.01, // supported for activation type 'leaky-relu'
+        leakyReluAlpha: 0.001, // supported for activation type 'leaky-relu'
     }
 
     const network = new NeuralNetwork(config);
@@ -46,9 +42,10 @@ function generateRewardNetwork(n, m, actionNumber) {
 
     const config = {
         inputSize: size,
-        outputSize: 1,        hiddenLayers: [size, size], // array of ints for the sizes of the hidden layers in the network
+        outputSize: 1,
+        hiddenLayers: [size, size], // array of ints for the sizes of the hidden layers in the network
         activation: 'sigmoid', // supported activation types: ['sigmoid', 'relu', 'leaky-relu', 'tanh'],
-        leakyReluAlpha: 0.0001, // supported for activation type 'leaky-relu'
+        leakyReluAlpha: 0.001, // supported for activation type 'leaky-relu'
     }
 
     const network = new NeuralNetwork(config);
